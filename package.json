@@ -1,0 +1,30 @@
+{
+  "name": "three-redux",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FrickHazard/Three-Redux.git"
+  },
+  "author": "Frick Hazard",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/FrickHazard/Three-Redux/issues"
+  },
+  "homepage": "https://github.com/FrickHazard/Three-Redux#readme",
+  "devDependencies": {
+    "@types/redux": "^3.6.0",
+    "@types/three": "^0.92.18",
+    "path": "^0.12.7",
+    "redux": "^4.0.0",
+    "three": "^0.96.0",
+    "ts-loader": "^5.0.0",
+    "typescript": "^3.0.3",
+    "webpack": "^4.17.2",
+    "webpack-cli": "^3.1.0"
+  }
+}
