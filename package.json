@@ -17,10 +17,10 @@
   },
   "homepage": "https://github.com/FrickHazard/Three-Redux#readme",
   "devDependencies": {
-    "@types/redux": "^3.6.0",
     "@types/three": "^0.92.18",
     "path": "^0.12.7",
     "redux": "^4.0.0",
+    "reselect": "^3.0.1",
     "three": "^0.96.0",
     "ts-loader": "^5.0.0",
     "typescript": "^3.0.3",
