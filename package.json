@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "start": "webpack-dev-server --open"
   },
   "repository": {
     "type": "git",
@@ -16,15 +17,26 @@
     "url": "https://github.com/FrickHazard/Three-Redux/issues"
   },
   "homepage": "https://github.com/FrickHazard/Three-Redux#readme",
-  "devDependencies": {
+  "dependencies": {
+    "@types/react": "^16.4.13",
+    "@types/react-dom": "^16.0.7",
+    "@types/react-redux": "^6.0.7",
     "@types/three": "^0.92.18",
     "path": "^0.12.7",
+    "react": "^16.5.0",
+    "react-dom": "^16.5.0",
+    "react-redux": "^5.0.7",
     "redux": "^4.0.0",
     "reselect": "^3.0.1",
     "three": "^0.96.0",
     "ts-loader": "^5.0.0",
-    "typescript": "^3.0.3",
     "webpack": "^4.17.2",
-    "webpack-cli": "^3.1.0"
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.8"
+  },
+  "devDependencies": {
+    "awesome-typescript-loader": "^5.2.1",
+    "source-map-loader": "^0.2.4",
+    "typescript": "^3.0.3"
   }
 }

@@ -6,18 +6,19 @@ module.exports = {
   devtool: 'inline-source-map',
   module: {
     rules: [
-      {
-        test: /\.tsx?$/,
-        use: 'ts-loader',
-        exclude: /node_modules/
-      }
+      { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
+
+      { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
     ]
   },
   resolve: {
     extensions: [ '.ts', '.js' ]
   },
+  devServer: {
+    contentBase: './bin'
+  },
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'bin')
-  }
+  },
 };
