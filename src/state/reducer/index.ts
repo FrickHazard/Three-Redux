@@ -1,6 +1,8 @@
 import { combineReducers } from 'redux';
-import { ballState } from './ballReducer';
+import { ball } from './ball';
+import { mainMenu } from './mainMenu'
 
 export const rootReducer = combineReducers({
-  ballState,
+  ball,
+  mainMenu,
 });

@@ -1,9 +1,17 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { ActionType, StateType } from '../state/reducer/types';
 
-class MainComponent extends React.Component {
+type Props = ReturnType<typeof mapStateToProps>;
+
+class MainComponent extends React.Component<Props> {
   render () {
-    return (<div>HI </div>);
+    return (<div>{this.props.gameStarted.toString()}</div>);
   }
 }
 
-export const Main = MainComponent;
+const mapStateToProps = (state: StateType) => ({
+  gameStarted: state.mainMenu.gameStarted,
+});
+
+export const Main = connect(mapStateToProps)(MainComponent);
