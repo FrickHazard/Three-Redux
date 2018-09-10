@@ -1,9 +1,9 @@
 import React from 'react';
 
-class Main extends React.Component {
+class MainComponent extends React.Component {
   render () {
     return (<div>HI </div>);
   }
 }
 
-export default Main;
+export const Main = MainComponent;

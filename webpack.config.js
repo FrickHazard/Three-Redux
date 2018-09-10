@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
   mode: 'development',
-  entry: './index.ts',
+  entry: './index.tsx',
   devtool: 'inline-source-map',
   module: {
     rules: [
@@ -12,7 +12,7 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: [ '.ts', '.js' ]
+    extensions: [ '.ts', '.js', '.tsx' ]
   },
   devServer: {
     contentBase: './bin'
