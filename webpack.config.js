@@ -1,9 +1,13 @@
 const path = require('path');
+const copyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
   mode: 'development',
   entry: './index.tsx',
   devtool: 'inline-source-map',
+  plugins: [
+    new copyWebpackPlugin([ { from: './index.html', to: 'index.html' } ])
+  ],
   module: {
     rules: [
       { test: /\.tsx?$/, loader: "awesome-typescript-loader" },

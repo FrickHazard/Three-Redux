@@ -22,6 +22,7 @@
     "@types/react-dom": "^16.0.7",
     "@types/react-redux": "^6.0.7",
     "@types/three": "^0.92.18",
+    "copy-webpack-plugin": "^4.5.2",
     "path": "^0.12.7",
     "react": "^16.5.0",
     "react-dom": "^16.5.0",
