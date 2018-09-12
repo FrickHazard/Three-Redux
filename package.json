@@ -30,6 +30,7 @@
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",
     "reselect": "^3.0.1",
+    "resize-observer-polyfill": "^1.5.0",
     "stats.js": "^0.17.0",
     "three": "^0.96.0",
     "ts-loader": "^5.0.0",
