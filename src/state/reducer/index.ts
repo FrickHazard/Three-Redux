@@ -6,3 +6,5 @@ export const rootReducer = combineReducers({
   ball,
   mainMenu,
 });
+
+export type StateType = ReturnType<typeof rootReducer>;

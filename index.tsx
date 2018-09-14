@@ -3,11 +3,11 @@ import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 import { Body } from './src/component/Body';
-import { initializeReduxMuck } from './src/redux-muck';
+import { ReduxMuck } from './src/redux-muck';
 import { rootReducer } from './src/state/reducer/index';
 ​
 const store = createStore(rootReducer);
-initializeReduxMuck(store);
+const reduxMock = new ReduxMuck(store);
 ​
 render(
   <Provider store={store}>

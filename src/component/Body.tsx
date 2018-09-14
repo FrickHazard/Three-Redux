@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { MainCanvas } from './MainCanvas';
-import { StateType } from '../state/reducer/types';
+import { StateType } from '../state/reducer/index';
 
 type Props = ReturnType<typeof mapStateToProps>;
 

@@ -1,5 +1,4 @@
 import { BallState } from './ball';
-import { rootReducer } from './index';
 
 export type ActionType =
   { type: 'SET_BALL_STATE', payload: BallState } |
@@ -10,5 +9,3 @@ export const actionAtlas = {
     return { type: 'SET_BALL_STATE', payload };
   }
 }
-
-export type StateType = ReturnType<typeof rootReducer>;
