@@ -1,5 +1,6 @@
 import React from 'react';
 import { Display } from '../three/Display';
+import { SceneManager } from '../three/SceneManager';
 
 class MainCanvasComponent extends React.Component {
   public display: Display | null = null;
@@ -7,6 +8,7 @@ class MainCanvasComponent extends React.Component {
   componentDidMount() {
     if (this.container) {
       this.display = new Display(this.container);
+      SceneManager.startup();
     }
   }
   render () {

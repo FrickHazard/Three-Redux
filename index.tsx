@@ -7,7 +7,7 @@ import { ReduxMuck } from './src/redux-muck';
 import { rootReducer } from './src/state/reducer/index';
 ​
 const store = createStore(rootReducer);
-const reduxMock = new ReduxMuck(store);
+export const reduxMock = new ReduxMuck(store);
 ​
 render(
   <Provider store={store}>

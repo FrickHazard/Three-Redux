@@ -1,4 +1,4 @@
-import { BallState } from './ball';
+import { BallState } from './balls';
 
 export type ActionType =
   { type: 'SET_BALL_STATE', payload: BallState } |

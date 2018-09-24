@@ -1,36 +1,72 @@
-import { Store, Action } from 'redux';
-import { Selector } from 'reselect';
+import { Store } from 'redux';
 
-interface SubscribedSelector <S, SR>{
-  selector: Selector<S, SR>;
-  callback: (sr: SR) => any;
+interface Subscription <State, Result>{
+  selector: (input: State) => Result;
+  callback: (sr: Result) => any;
 }
 
-export class ReduxMuck<S, A extends Action, T extends Store<S, A>> {
+interface InstanceSubscription<State, Result> extends Subscription<State, Result> {
+  instance: object;
+}
+
+export class ReduxMuck<
+S extends ReturnType<T['getState']>,
+T extends Store> {
   private readonly store: T;
   private previousState: S | undefined = undefined;
   private currentState: S | undefined = undefined;
-  private subscribedSelectors: SubscribedSelector<S, any>[] = [];
+  private subscribedSelectors: Subscription<S, any>[] = [];
+  private instanceSelectors: InstanceSubscription<S, any>[] = []
   constructor(store: T) {
     this.store = store;
     this.onSubscribe();
     store.subscribe(this.onSubscribe);
   }
 
-  public addGlobalSelector<SR>(selectorSubscription: SubscribedSelector<S, SR>) {
-    this.subscribedSelectors.push(selectorSubscription);
+  public addInstanceBasedSubscription<Result>(
+    instance: object,
+    subscription: Subscription<S, Result>) {
+    this.instanceSelectors.push({
+      instance,
+      callback: subscription.callback,
+      selector: subscription.selector,
+    });
+    if (this.currentState) {
+      subscription.callback(subscription.selector(this.currentState));
+    }
+  }
+
+  public removeInstanceBasedSubscription<Result>(instance: object, subscription: Subscription<S, Result>) {
+    const subIndex = this.instanceSelectors.findIndex(
+      (sub: InstanceSubscription<S, Result>) => {
+      return sub.callback === subscription.callback &&
+        sub.instance === instance &&
+        sub.selector === subscription.selector;
+    });
+    if (subIndex !== -1) {
+      this.instanceSelectors.splice(subIndex, 1);
+    }
+  }
+
+  public addGlobalSelector<SR>(subscription: Subscription<S, SR>) {
+    this.subscribedSelectors.push(subscription);
   }
 
   private onSubscribe = () => {
     this.previousState = this.currentState;
     this.currentState = this.store.getState();
     for (const selectorWithCallback of this.subscribedSelectors) {
-      if (
-        !this.previousState ||
-        selectorWithCallback.selector(this.currentState) !==
-          selectorWithCallback.selector(this.previousState)
-      ) {
-        selectorWithCallback.callback(selectorWithCallback.selector(this.currentState));
+      if (!this.currentState) {
+        return;
+      }
+      const currentStateSelectorResult = selectorWithCallback.selector(this.currentState);
+      if (!this.previousState) {
+        selectorWithCallback.selector(currentStateSelectorResult);
+        return;
+      }
+      const previousStateSelectorResult = selectorWithCallback.selector(this.previousState);
+      if (previousStateSelectorResult !== currentStateSelectorResult) {
+        selectorWithCallback.selector(currentStateSelectorResult);
       }
     }
   }

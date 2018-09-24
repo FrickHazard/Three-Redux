@@ -7,6 +7,9 @@ export class SceneManager {
     // later do scene handling logic
     return this.mainScene;
   }
+  public static startup() {
+    SceneManager.mainScene.add(new Level());
+  }
 }
 
-SceneManager.mainScene.add(new Level());
+// SceneManager.mainScene.autoUpdate = false;
