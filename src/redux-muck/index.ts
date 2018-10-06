@@ -25,7 +25,8 @@ T extends Store> {
 
   public addInstanceBasedSubscription<Result>(
     instance: object,
-    subscription: Subscription<S, Result>) {
+    subscription: Subscription<S, Result>
+  ) {
     this.instanceSelectors.push({
       instance,
       callback: subscription.callback,
@@ -55,7 +56,7 @@ T extends Store> {
   private onSubscribe = () => {
     this.previousState = this.currentState;
     this.currentState = this.store.getState();
-    for (const selectorWithCallback of this.subscribedSelectors) {
+    for (const selectorWithCallback of this.instanceSelectors) {
       if (!this.currentState) {
         return;
       }
@@ -66,7 +67,7 @@ T extends Store> {
       }
       const previousStateSelectorResult = selectorWithCallback.selector(this.previousState);
       if (previousStateSelectorResult !== currentStateSelectorResult) {
-        selectorWithCallback.selector(currentStateSelectorResult);
+        selectorWithCallback.callback(currentStateSelectorResult);
       }
     }
   }

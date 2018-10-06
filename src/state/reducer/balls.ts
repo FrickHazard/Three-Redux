@@ -12,6 +12,9 @@ const initialState: BallState = [{ x: 1, y: 0, z:0 }];
 
 export const balls = (state: BallState = initialState, action: ActionType): BallState => {
   switch (action.type) {
+    case 'SET_BALL_STATE':{
+      return action.payload;
+    }
     default: {
       return state;
     }

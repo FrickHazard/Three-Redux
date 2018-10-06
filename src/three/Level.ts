@@ -1,6 +1,5 @@
-import { Group, Mesh, BoxGeometry } from 'three';
+import { Group, Mesh, SphereGeometry } from 'three';
 import { reduxMock } from '../../index';
-import { createSelector } from 'reselect';
 
 interface UpdateData {
   x: number;
@@ -9,12 +8,11 @@ interface UpdateData {
 }
 
 export class Level extends Group {
-  private boxTest: Mesh;
+  private ball: Mesh;
   constructor() {
     super();
-    this.boxTest = new Mesh(new BoxGeometry(1, 1, 1));
-    this.add(this.boxTest);
-    this.add(new Mesh(new BoxGeometry(1, 1, 1)));
+    this.ball = new Mesh(new SphereGeometry(1, 12, 12));
+    this.add(this.ball);
     reduxMock.addInstanceBasedSubscription(this, {
       callback: this.update,
       selector: (state) => {
@@ -28,7 +26,7 @@ export class Level extends Group {
   }
 
   public update = (data: UpdateData) => {
-    this.boxTest.position.set(data.x, data.y, data.z)
+    this.ball.position.set(data.x, data.y, data.z)
   }
 
   public onLoadLevel() {
