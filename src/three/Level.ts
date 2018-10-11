@@ -1,5 +1,7 @@
 import { Group, Mesh, SphereGeometry } from 'three';
 import { reduxMock } from '../../index';
+import { StateType } from '../state/reducer/index'; 
+import { createHomogenousSelectorSubscription } from '../redux-muck/utilities'; 
 
 interface UpdateData {
   x: number;
@@ -38,7 +40,21 @@ export class Level extends Group {
   }
 
   public dispose() {
-    
+    reduxMock.removeInstanceBasedSubscription(this, )
   }
 
 }
+
+
+const mapStateToObject = (state: StateType) => ([
+  {
+    callback: this.update,
+    selector: () => {
+      return {
+        x:state.balls[0].x,
+        y:state.balls[0].y,
+        z:state.balls[0].z,
+      }
+    },
+  }
+]);

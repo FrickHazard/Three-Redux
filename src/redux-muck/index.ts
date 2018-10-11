@@ -1,11 +1,11 @@
 import { Store } from 'redux';
 
-interface Subscription <State, Result>{
+export interface Subscription <State, Result>{
   selector: (input: State) => Result;
   callback: (sr: Result) => any;
 }
 
-interface InstanceSubscription<State, Result> extends Subscription<State, Result> {
+export interface InstanceSubscription<State, Result> extends Subscription<State, Result> {
   instance: object;
 }
 
