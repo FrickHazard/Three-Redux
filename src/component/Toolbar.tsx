@@ -24,17 +24,19 @@ class ToolbarComponent extends React.Component<Props, State> {
     event: React.ChangeEvent<HTMLInputElement>,
     coordinateAxis: 'X' | 'Y' | 'Z'
   ) => {
+    let value = parseFloat(event.target.value);
+    if (isNaN(value)) value = 0;
     switch (coordinateAxis) {
       case 'X': {
-        this.setState({ inputX: event.target.valueAsNumber });
+        this.setState({ inputX: value  });
         break;
       }
       case 'Y': {
-        this.setState({ inputY: event.target.valueAsNumber });
+        this.setState({ inputY: value });
         break;
       }
       case 'Z': {
-        this.setState({ inputZ: event.target.valueAsNumber });
+        this.setState({ inputZ: value });
         break;
       }
 
