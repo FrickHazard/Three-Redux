@@ -1,5 +1,5 @@
 import { Mesh, SphereBufferGeometry, MeshBasicMaterial, Color } from 'three';
-import { mapStateChangeSubscriptions, createMapStateChange } from 'redux-muck';
+import { connectStateChangeSubscriptions, createMapStateChange } from 'redux-muck';
 import { StateType } from '../state/reducer/index';
 
 
@@ -43,4 +43,4 @@ const updateColor = <IdealApiExample>createMapStateChange({
   },
 });
 
-export default mapStateChangeSubscriptions(updatePosition, updateColor)(IdealApiExample);
+export default connectStateChangeSubscriptions(updatePosition, updateColor)(IdealApiExample);

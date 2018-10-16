@@ -1,14 +1,27 @@
 import { Wrapper } from './Wrapper';
 import { Subscription } from './Subscription';
+import { Store } from 'redux';
+
+let getStore:  (() => Store) = () => { throw new Error('Get State not intialized'); };
+
+export const intializeReduxMuck = (store: Store) => {
+  getStore = () => store;
+};
 
 interface StoreMapper <T>{
-  parent?: StoreMapper<any>;
   selector: ((state: any) => T);
   callback: ((input: T) => void);
 };
 
-export const connect = (...storeMaps: StoreMapper<any>[]) => {
+// const createSubscriptionFrom = (mapper: StoreMapper) => {
+//   return new Subscription(getStore(), )
+// }
+
+export const connectStateChangeSubscriptions = (...storeMaps: StoreMapper<any>[]) => {
   for (const storeMap of storeMaps) {
-    // const subscription = new Subscription();
+
+  }
+  return function(instance: Wrapper) {
+    
   }
 };
