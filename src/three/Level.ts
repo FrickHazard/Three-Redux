@@ -1,7 +1,7 @@
 import { Group, Mesh, SphereGeometry } from 'three';
 // import { reduxMock } from '../../index';
 import { StateType } from '../state/reducer/index'; 
-import { connect } from '../redux-muck/connect'; 
+import { SnaffleBit } from '../redux-muck'; 
 
 interface UpdateData {
   x: number;
@@ -11,6 +11,7 @@ interface UpdateData {
 
 export class Level extends Group {
   private ball: Mesh;
+  private bit: SnaffleBit;
   constructor() {
     super();
     this.ball = new Mesh(new SphereGeometry(1, 12, 12));
@@ -25,7 +26,7 @@ export class Level extends Group {
         }
       },
     };
-    connect(ballUpdate);
+    this.bit = new SnaffleBit(null, [ballUpdate]);
   }
 
   public update = (data: UpdateData) => {
@@ -41,6 +42,7 @@ export class Level extends Group {
   }
 
   public dispose() {
+    this.bit.dispose();
   }
 
 }
