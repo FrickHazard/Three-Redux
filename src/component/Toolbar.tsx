@@ -45,7 +45,8 @@ class ToolbarComponent extends React.Component<Props, State> {
   render () {
     return (
       <div style={{ 
-        width: 50
+        height: 50,
+        display: 'fixed'
       }}>
         <input
           type="number"

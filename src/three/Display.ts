@@ -29,6 +29,7 @@ export class Display {
   private onSizeChange() {
     this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
     this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.updateCameraAspect();
     this.renderFrame();
   }
 
@@ -37,6 +38,11 @@ export class Display {
     this.renderer.render(SceneManager.getScene(this.displayId), this.camera);
     this.stats.end();
     window.requestAnimationFrame(this.renderFrame);
+  };
+
+  private updateCameraAspect = () => {
+    this.camera.aspect = this.getSize().width / this.getSize().height;
+    this.camera.updateProjectionMatrix();
   };
 
   public getSize () {

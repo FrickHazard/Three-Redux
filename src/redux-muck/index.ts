@@ -14,13 +14,12 @@ export class SnaffleBit {
   private sub: Subscription<any>;
   public children: SnaffleBit[] = [];
   public constructor(
-    parentSub: Subscription<any> | null,
     mapStateToCallbacks: MapStateToCallback<any>[],
     mapDispatchToActionFunction?: MapDispatchToObjectFunction,
   ) {
     const handleChange =
       createHandleChangeFunctionFromMapStateToCallback(memoizeAndInitialCallMapStateToCallbacks(mapStateToCallbacks));
-    this.sub = new Subscription(getStore(), parentSub, handleChange);
+    this.sub = new Subscription(getStore(), handleChange);
     this.sub.trySubscribe();
     this.dispatchObject = mapDispatchToActionFunction ? 
       mapDispatchToActionFunction(getStore().dispatch):

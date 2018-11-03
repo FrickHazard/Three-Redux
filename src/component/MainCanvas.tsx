@@ -15,8 +15,14 @@ class MainCanvasComponent extends React.Component {
     return (
       <div
         style={{
-          width: '100%',
           height: '100%',
+          width: '100%',
+          position: 'fixed',
+          objectFit: 'scale-down',
+          zIndex: 0,
+          lineHeight: 0,
+          cursor: 'crosshair',
+          userSelect: 'none',
         }}
         ref={(ref) => this.container = ref}
       >
