@@ -1,7 +1,6 @@
 import { Object3D, Mesh } from 'three';
 import { boxGeometry } from './staticGeometry';
 import { oddBoxSquareMaterial, evenBoxSquareMaterial } from './staticMaterial';
-import { SnaffleBit } from '../redux-muck'; 
 
 export class BallGrid extends Object3D {
   constructor() {

@@ -1,11 +1,11 @@
-import { Store } from 'redux';
+export type StateSubscription = ((func: () => any) => () => any | null | undefined);
 
-export class Subscription<ST extends Store> {
-  private store: ST;
+export class Subscription {
+  private stateSubscription: StateSubscription;
   private onStateChange: () => any;
   private unsubscribe: (() => any) | null;
-  constructor(store: ST, onStateChange: () => any) {
-    this.store = store
+  constructor(stateSubscription: StateSubscription, onStateChange: () => any) {
+    this.stateSubscription = stateSubscription
     this.onStateChange = onStateChange
     this.unsubscribe = null
   }
@@ -16,7 +16,7 @@ export class Subscription<ST extends Store> {
 
   trySubscribe() {
     if (!this.unsubscribe) {
-      this.unsubscribe = this.store.subscribe(this.onStateChange)
+      this.unsubscribe = this.stateSubscription(this.onStateChange)
     }
   }
 

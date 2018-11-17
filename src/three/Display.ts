@@ -1,15 +1,17 @@
-import { WebGLRenderer, PerspectiveCamera } from 'three';
-import { SceneManager } from './SceneManager';
+import { WebGLRenderer, Scene } from 'three';
+import { PlayerEntity } from './PlayerEntity';
 import Stats from 'stats.js';
 import ResizeObserver from 'resize-observer-polyfill';
+import { Level } from './Level';
 
 export class Display {
   private displayId: number = 1;
   private container: HTMLDivElement;
   private observer: ResizeObserver;
-  private camera: PerspectiveCamera;
   private stats: Stats = new Stats();
   private renderer: WebGLRenderer;
+  private player: PlayerEntity;
+  private scene: Scene;
   constructor(divElement: HTMLDivElement) {
     this.container = divElement;
     this.renderer = new WebGLRenderer({ antialias: true });
@@ -18,9 +20,13 @@ export class Display {
     this.renderer.setClearColor(0x272727);
     this.container.appendChild(this.stats.dom);
     this.container.appendChild(this.renderer.domElement);
+    this.scene = new Scene();
+    this.scene.add(new Level());
     const aspect = this.getSize().width / this.getSize().height;
-    this.camera = new PerspectiveCamera(75, aspect, 0.1, 500);
-    this.camera.position.setZ(10);
+    this.player = new PlayerEntity();
+    this.scene.add(this.player);
+    this.player.headCamera.aspect = aspect;
+    this.player.headCamera.updateProjectionMatrix();
     this.observer = new ResizeObserver(() => this.onSizeChange());
     this.observer.observe(this.container);
     this.renderFrame();
@@ -35,14 +41,14 @@ export class Display {
 
   private renderFrame = () => {
     this.stats.begin();
-    this.renderer.render(SceneManager.getScene(this.displayId), this.camera);
+    this.renderer.render(this.scene, this.player.headCamera);
     this.stats.end();
     window.requestAnimationFrame(this.renderFrame);
   };
 
   private updateCameraAspect = () => {
-    this.camera.aspect = this.getSize().width / this.getSize().height;
-    this.camera.updateProjectionMatrix();
+    this.player.headCamera.aspect = this.getSize().width / this.getSize().height;
+    this.player.headCamera.updateProjectionMatrix();
   };
 
   public getSize () {
