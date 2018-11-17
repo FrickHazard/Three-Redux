@@ -1,4 +1,4 @@
-import { Subscription } from './subscription';
+// import { Subscription } from './subscription';
 import shallowEqual from './shallowEqual';
 
 type Unsubscribe = () => void;
@@ -6,9 +6,8 @@ type Unsubscribe = () => void;
 type Dispatch <Action> = (action: Action) => Action;
 
 // more or less copied from redux
-export interface DataStore<State, Action> {
+export interface DataStore<State> {
   getState: () => State;
-  dispatch: Dispatch<Action>,
   subscribe: (listener: () => void) => Unsubscribe;
 }
 
@@ -28,17 +27,17 @@ interface MemoizedMapStateToCallbackData<SR, ST> extends MapStateToCallback<SR, 
   previousResult: SR;
 };
 
-export interface SnaffleBit <ST, A>{
-  readonly dispatchDictionary: MapDispatchToActionDictionary;
+export interface SnaffleBit <ST>{
+  // readonly dispatchDictionary: MapDispatchToActionDictionary;
   readonly createChild: (
     mapStateToCallbacks: MapStateToCallback<any, ST>[],
-    mapDispatchToActionDictionary?: MapDispatchToActionDictionaryFunction<A>
-  ) => SnaffleBit<ST, A>;
+  //  mapDispatchToActionDictionary?: MapDispatchToActionDictionaryFunction<A>
+  ) => SnaffleBit<ST>;
   readonly dispose: () => void
 }
 
 function memoizeAndInitialCallMapStateToCallbacks<ST,SR>(
-  store: DataStore<ST, any>,
+  store: DataStore<ST>,
   mapStateToCallbackData: MapStateToCallback<SR, ST>[]
 ): MemoizedMapStateToCallbackData<SR, ST>[] {
   const state = store.getState();
@@ -55,7 +54,7 @@ function memoizeAndInitialCallMapStateToCallbacks<ST,SR>(
   }
 
 function createHandleChangeFunctionFromMapStateToCallback<SR, ST>(
-  store: DataStore<ST, any>,
+  store: DataStore<ST>,
   mapStateToCallbackData: MemoizedMapStateToCallbackData<SR, ST>[]) {
   return function() {
     for (const mapStateData of mapStateToCallbackData) {
@@ -68,48 +67,48 @@ function createHandleChangeFunctionFromMapStateToCallback<SR, ST>(
   }
 };
 
-function createSnaffleBit <ST, A>(
-  store: DataStore<ST, A>, 
+function createSnaffleBit <ST>(
+  store: DataStore<ST>, 
   mapStateToCallbacks: MapStateToCallback<any, ST>[],
-  mapDispatchToActionDictionary?: MapDispatchToActionDictionaryFunction<A>
-): SnaffleBit<ST, A> {
+  // mapDispatchToActionDictionary?: MapDispatchToActionDictionaryFunction<A>
+): SnaffleBit<ST> {
 
-  const children: SnaffleBit<ST, A>[] = [];
+  const children: SnaffleBit<ST>[] = [];
 
   const handleChange =
     createHandleChangeFunctionFromMapStateToCallback(store,
       memoizeAndInitialCallMapStateToCallbacks(store, mapStateToCallbacks));
 
-  const subscription = new Subscription(store.subscribe, handleChange);
-  subscription.trySubscribe();
+  var unsubscribe = store.subscribe(handleChange);
 
-  const dispatchDictionary = mapDispatchToActionDictionary ? 
-    mapDispatchToActionDictionary(store.dispatch) :
-    {};
+  // const dispatchDictionary = mapDispatchToActionDictionary ? 
+  //   mapDispatchToActionDictionary(store.dispatch) :
+  //   {};
   return {
     createChild: function(
       mapStateToCallbacks: MapStateToCallback<any, ST>[],
-      mapDispatchToActionDictionary?: MapDispatchToActionDictionaryFunction<A>
+    //  mapDispatchToActionDictionary?: MapDispatchToActionDictionaryFunction<A>
     ) {
-      const newSnaffle = createSnaffleBit(store, mapStateToCallbacks, mapDispatchToActionDictionary);
+      const newSnaffle = createSnaffleBit(store, mapStateToCallbacks, /*mapDispatchToActionDictionary*/);
       children.push(newSnaffle);
       return newSnaffle;
     },
-    dispatchDictionary,
+    // dispatchDictionary,
     dispose: function() {
       for (let i = 0; i < children.length; i ++) {
         children[i].dispose();
       }
-      subscription.tryUnsubscribe();
+      unsubscribe();
     }
   }
 }
 
-export const createSnaffleBitProvider = <ST, A>(store: DataStore<ST, A>) => {
+export const createSnaffleBitProvider = <ST>(store: DataStore<ST>) => {
   return {
     createRoot: (
       mapStateToCallbacks: MapStateToCallback<any, ST>[],
-      mapDispatchToActionDictionary?: MapDispatchToActionDictionaryFunction<A>
-    ): SnaffleBit<ST, A> => createSnaffleBit(store, mapStateToCallbacks, mapDispatchToActionDictionary)
+      // mapDispatchToActionDictionary?: MapDispatchToActionDictionaryFunction<A>
+    ): SnaffleBit<ST> => createSnaffleBit(
+      store, mapStateToCallbacks/*, mapDispatchToActionDictionary*/)
   };
 };

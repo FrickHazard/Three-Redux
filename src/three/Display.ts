@@ -41,7 +41,11 @@ export class Display {
 
   private renderFrame = () => {
     this.stats.begin();
+    const start = performance.now();
     this.renderer.render(this.scene, this.player.headCamera);
+    const end = performance.now();
+    const frameLengthMiliseconds = end - start;
+    
     this.stats.end();
     window.requestAnimationFrame(this.renderFrame);
   };
