@@ -1,5 +1,5 @@
 import { Group, Mesh, SphereGeometry, DirectionalLight } from 'three';
-import { StateType } from '../state/reducer/index'; 
+import { StateType } from '../state/redux/reducer/index'; 
 import { reduxBit, ReduxSnaffleBit } from '../../index';
 import { BallGrid } from './BallGrid';
 

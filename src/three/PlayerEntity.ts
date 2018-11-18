@@ -23,7 +23,6 @@ export class PlayerEntity extends Object3D {
       nearClippingPlaneDistance, farClippingPlaneDistance);
     this.add(this.headCamera);
     this.headCamera.position.add(new Vector3(0, playerHeight, 0));
-    document.addEventListener('keydown', this.onKeyPress);
     this.bit = playerBit.createRoot([
       {
         selector: (state) => {
@@ -36,40 +35,6 @@ export class PlayerEntity extends Object3D {
         callback: this.setTransformData,
       }
     ]);
-  }
-
-  private onKeyPress = (event: KeyboardEvent) => {
-    if (event.keyCode === 38) {
-     this.move(new Vector3(0, 0, -1));
-    }
-    else if (event.keyCode === 40) {
-      this.move(new Vector3(0, 0, 1));
-    }
-    else if (event.keyCode === 37) {
-      this.move(new Vector3(1, 0, 0));
-    }
-    else if (event.keyCode === 39) {
-      this.move(new Vector3(-1, 0, 0));
-    }
-    else if (event.keyCode === 33) {
-      this.move(new Vector3(0, 1, 0));
-    }
-    else if (event.keyCode === 34) {
-      this.move(new Vector3(0, -1, 0));
-    }
-
-    else if (event.keyCode === 65) {
-      this.rotatePitch(-playerPitchRotationSpeed);
-    }
-    else if (event.keyCode === 68) {
-      this.rotatePitch(playerPitchRotationSpeed);
-    }
-    else if (event.keyCode === 87) {
-      this.rotateYaw(-playerYawRotationSpeed);
-    }
-    else if (event.keyCode === 83) {
-      this.rotateYaw(playerYawRotationSpeed);
-    }
   }
 
   private move(direction: Vector3) {
