@@ -1,10 +1,8 @@
 import { Object3D, PerspectiveCamera, Vector3, Euler } from 'three';
-import { degToRad } from '../utils/units';
-import { playerBit, PlayerSnaffleBit } from '../../index';
-import { Point3D } from '../utils/basicDataTypes';
+import { degToRad } from '../library/units';
+import { playerTransformLogSnaffleBitProvider, PlayerTransformLogSnaffleBit } from '../../index';
+import { Point3D, Point2D } from '../library/basicDataTypes';
 
-const playerPitchRotationSpeed = 0.01;
-const playerYawRotationSpeed = 0.01;
 const playerSpeed = 3;
 const playerHeight = 2;
 const nearClippingPlaneDistance = 0.1;
@@ -15,7 +13,7 @@ export class PlayerEntity extends Object3D {
   public yaw: number = 0;
   public pitch: number = 0;
   public headCamera: PerspectiveCamera;
-  private bit: PlayerSnaffleBit;
+  private playerTransformLogSnaffleBit: PlayerTransformLogSnaffleBit;
   constructor() {
     super();
     this.position.set(0, 0, 14);
@@ -23,48 +21,34 @@ export class PlayerEntity extends Object3D {
       nearClippingPlaneDistance, farClippingPlaneDistance);
     this.add(this.headCamera);
     this.headCamera.position.add(new Vector3(0, playerHeight, 0));
-    this.bit = playerBit.createRoot([
-      {
-        selector: (state) => {
-          return {
-            pitch: state.pitch,
-            yaw: state.yaw,
-            position: state.position
-          };
-        },
-        callback: this.setTransformData,
-      }
-    ]);
+    this.playerTransformLogSnaffleBit = playerTransformLogSnaffleBitProvider.createRoot();
   }
 
-  private move(direction: Vector3) {
-    const movementVector = direction
-      .clone()
+  private setTransform(input: {
+    movementAxisInput: Point3D,
+    lookAxisInput: Point2D,
+  }) {
+    const movementVector = new Vector3().set(
+      input.movementAxisInput.x,
+      input.movementAxisInput.y,
+      input.movementAxisInput.z)
       .applyQuaternion(this.headCamera.quaternion)
       .multiplyScalar(playerSpeed);        
     this.position.add(movementVector);
-  }
-
-  private rotateYaw(amount: number) {
-    this.yaw += amount;
-    this.quaternion.setFromEuler(new Euler(this.yaw, 0, 0));
-  }
-
-  private rotatePitch(amount: number) {
-    this.pitch += amount;
-    this.headCamera.quaternion.setFromEuler(new Euler(0, this.pitch, 0));
-  }
-
-  private setTransformData = (data: {
-    yaw: number,
-    pitch: number,
-    position: Point3D
-  }) => {
-    this.headCamera.quaternion.setFromEuler(new Euler(0, data.pitch, 0));
-    this.quaternion.setFromEuler(new Euler(data.yaw, 0, 0));
+    this.headCamera.quaternion.setFromEuler(new Euler(0, input.lookAxisInput.x, 0));
+    this.quaternion.setFromEuler(new Euler(input.lookAxisInput.y, 0, 0));
+    this.playerTransformLogSnaffleBit.logPlayerTransform({
+      position: {
+        x: this.position.x,
+        y: this.position.y,
+        z: this.position.z,
+      },
+      pitch: input.lookAxisInput.x,
+      yaw: input.lookAxisInput.y,
+    });
   }
 
   public dispose() {
-    this.bit.dispose();
+    this.playerTransformLogSnaffleBit.dispose();
   }
 }

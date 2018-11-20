@@ -1,4 +1,4 @@
-import { MeshBasicMaterial, MeshLambertMaterial, Color } from 'three';
+import { MeshLambertMaterial, Color } from 'three';
 
 export const evenBoxSquareMaterial = new MeshLambertMaterial({
   color: new Color(0xff00ff),

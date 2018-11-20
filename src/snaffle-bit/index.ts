@@ -1,39 +1,45 @@
 import shallowEqual from './shallowEqual';
 
-type Unsubscribe = () => void;
+const emptyFunction = function(){}
 
-type Dispatch <Action> = (action: Action) => Action;
+type ExtensionsType = {};
+
+export type Unsubscribe = () => void;
+
+export type Subscribe<T extends any[]> = (listenerCallback: (...input: T) => void) => Unsubscribe;
+
+type DataStoreSubscribe = Subscribe<[]>;
+
+export interface Observable {
+  subscribe: Subscribe<any>;
+}
 
 // more or less copied from redux
-export interface DataStore<State extends Readonly<{}>> {
+export interface DataStore<State extends Readonly<{}>> extends Observable {
+  subscribe: DataStoreSubscribe;
   getState: () => State;
-  subscribe: (listener: () => void) => Unsubscribe;
 }
 
-interface MapDispatchToActionDictionary {
-  readonly [key: string]: (() => any);
+interface MapStateToCallback<SelectorResult, State> {
+  selector: ((state: State) => SelectorResult);
+  callback: ((input: SelectorResult) => void);
 }
 
-interface MapStateToCallback<SR, ST> {
-  selector: ((state: ST) => SR);
-  callback: ((input: SR) => void);
-}
-
-interface MemoizedMapStateToCallbackData<SR, ST> extends MapStateToCallback<SR, ST>{
-  previousResult: SR;
+interface MemoizedMapStateToCallbackData<SelectorResult, State> extends MapStateToCallback<SelectorResult, State>{
+  previousResult: SelectorResult;
 };
 
-export interface SnaffleBit <ST, EX extends {}>{
+export interface SnaffleBit <State, Extensions extends ExtensionsType>{
   readonly createChild: (
-    mapStateToCallbacks: MapStateToCallback<any, ST>[],
-  ) => SnaffleBit<ST, EX> & EX;
+    mapStateToCallbacks: MapStateToCallback<any, State>[],
+  ) => SnaffleBit<State, Extensions>;
   readonly dispose: () => void;
 }
 
-function memoizeAndInitialCallMapStateToCallbacks<ST,SR>(
-  store: DataStore<ST>,
-  mapStateToCallbackData: MapStateToCallback<SR, ST>[]
-): MemoizedMapStateToCallbackData<SR, ST>[] {
+function memoizeAndInitialCallMapStateToCallbacks<State, SelectorResult>(
+  store: DataStore<State>,
+  mapStateToCallbackData: MapStateToCallback<SelectorResult, State>[]
+): MemoizedMapStateToCallbackData<SelectorResult, State>[] {
   const state = store.getState();
     return mapStateToCallbackData.map(mapStateToCallback => {
       const selectorResult = mapStateToCallback.selector(state);
@@ -47,9 +53,10 @@ function memoizeAndInitialCallMapStateToCallbacks<ST,SR>(
     });
   }
 
-function createHandleChangeFunctionFromMapStateToCallback<SR, ST>(
-  store: DataStore<ST>,
-  mapStateToCallbackData: MemoizedMapStateToCallbackData<SR, ST>[]) {
+function createHandleChangeFunctionFromMapStateToCallback<SelectorResult, State>(
+  store: DataStore<State>,
+  mapStateToCallbackData: MemoizedMapStateToCallbackData<SelectorResult, State>[]) {
+  if (mapStateToCallbackData.length === 0) return  emptyFunction;
   return function() {
     for (const mapStateData of mapStateToCallbackData) {
       const selectorResult = mapStateData.selector(store.getState());
@@ -61,13 +68,13 @@ function createHandleChangeFunctionFromMapStateToCallback<SR, ST>(
   }
 };
 
-function createSnaffleBit <ST, EX extends object>(
-  store: DataStore<ST>, 
-  mapStateToCallbacks: MapStateToCallback<any, ST>[],
-  extensions: EX,
+function createSnaffleBit <State, Extensions extends ExtensionsType>(
+  store: DataStore<State>, 
+  mapStateToCallbacks: MapStateToCallback<any, State>[],
+  extensions: Extensions,
 ) {
 
-  const children: SnaffleBit<ST, EX>[] = [];
+  const children: SnaffleBit<State, Extensions>[] = [];
 
   const handleChange =
     createHandleChangeFunctionFromMapStateToCallback(store,
@@ -77,7 +84,7 @@ function createSnaffleBit <ST, EX extends object>(
 
   return Object.assign(Object.assign({}, extensions), {
     createChild: function(
-      mapStateToCallbacks: MapStateToCallback<any, ST>[],
+      mapStateToCallbacks: MapStateToCallback<any, State>[],
     ) {
       const newSnaffle = createSnaffleBit(store, mapStateToCallbacks, extensions);
       children.push(newSnaffle);
@@ -92,13 +99,13 @@ function createSnaffleBit <ST, EX extends object>(
   });
 }
 
-export const createSnaffleBitProvider = <ST, EX extends {}>(
-  dataStore: DataStore<ST>,
-  extensions: EX,
+export const createSnaffleBitProvider = <State, Extensions extends ExtensionsType>(
+  dataStore: DataStore<State>,
+  extensions: Extensions,
 ) => {
   return {
     createRoot: (
-      mapStateToCallbacks: MapStateToCallback<any, ST>[],
+      mapStateToCallbacks: MapStateToCallback<any, State>[] = [],
     ) => createSnaffleBit(dataStore, mapStateToCallbacks, extensions)
   };
 };

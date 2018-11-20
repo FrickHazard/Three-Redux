@@ -1,17 +1,18 @@
 import { WebGLRenderer, Scene } from 'three';
 import { PlayerEntity } from './PlayerEntity';
+import { frameBit, FrameDataSnaffleBit } from '../../index';
 import Stats from 'stats.js';
 import ResizeObserver from 'resize-observer-polyfill';
 import { Level } from './Level';
 
 export class Display {
-  private displayId: number = 1;
   private container: HTMLDivElement;
   private observer: ResizeObserver;
   private stats: Stats = new Stats();
   private renderer: WebGLRenderer;
   private player: PlayerEntity;
   private scene: Scene;
+  private frameBit: FrameDataSnaffleBit = frameBit.createRoot();
   constructor(divElement: HTMLDivElement) {
     this.container = divElement;
     this.renderer = new WebGLRenderer({ antialias: true });
@@ -45,7 +46,7 @@ export class Display {
     this.renderer.render(this.scene, this.player.headCamera);
     const end = performance.now();
     const frameLengthMiliseconds = end - start;
-    
+    this.frameBit.computeFrameData(frameLengthMiliseconds);
     this.stats.end();
     window.requestAnimationFrame(this.renderFrame);
   };

@@ -1,6 +1,9 @@
-export function createDataStoreSubscribeFunction() {
-  let currentListeners: (() => void)[] = [];
-  let nextListeners = currentListeners;
+import { Subscribe, Unsubscribe } from './index';
+
+export function createSubscribeAndSignalChangeFunctions<T extends any[]>()
+: { subscribe: Subscribe<T>, signalChange: (...input : T) => void} {
+  let currentListeners: ((...input : T) => void)[] = [];
+  let nextListeners = currentListeners; 
 
   function ensureCanMutateNextListeners() {
     if (nextListeners === currentListeners) {
@@ -28,11 +31,11 @@ export function createDataStoreSubscribeFunction() {
     }
   }
 
-  function signalChange() {
+  function signalChange(...params: T) {
     const listeners = (currentListeners = nextListeners);
     for (let i = 0; i < listeners.length; i++) {
       const listener = listeners[i];
-      listener();
+      listener(...params);
     }
   }
 

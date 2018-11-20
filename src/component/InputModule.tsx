@@ -18,35 +18,35 @@ class InputModuleComponent extends React.Component<{}> {
 
   onKeyDown = (event: KeyboardEvent) => {
     if (event.keyCode === 38) {
-      this.frameBit.addPlayerMovementInput(new Vector3(0, 0, -1));
+      this.frameBit.addPlayerMovementInput({ x: 0, y:0, z: -1 });
      }
      else if (event.keyCode === 40) {
-       this.frameBit.addPlayerMovementInput(new Vector3(0, 0, 1));
+       this.frameBit.addPlayerMovementInput({ x: 0, y:0, z: 1 });
      }
      else if (event.keyCode === 37) {
-       this.frameBit.addPlayerMovementInput(new Vector3(1, 0, 0));
+       this.frameBit.addPlayerMovementInput({ x: 1, y: 0, z: 0 });
      }
      else if (event.keyCode === 39) {
-       this.move(new Vector3(-1, 0, 0));
+       this.frameBit.addPlayerMovementInput({ x: -1, y: 0, z: 0 });
      }
      else if (event.keyCode === 33) {
-       this.move(new Vector3(0, 1, 0));
+       this.frameBit.addPlayerMovementInput({ x: 0, y: 1, z: 0 });
      }
      else if (event.keyCode === 34) {
-       this.move(new Vector3(0, -1, 0));
+       this.frameBit.addPlayerMovementInput({ x: 0, y: -1, z: 0});
      }
  
      else if (event.keyCode === 65) {
-       this.rotatePitch(-playerPitchRotationSpeed);
+       this.frameBit.addPlayerLookInput({ x: -0.01, y: 0 });
      }
      else if (event.keyCode === 68) {
-       this.rotatePitch(playerPitchRotationSpeed);
+       this.frameBit.addPlayerLookInput({ x: 0.01, y: 0 });
      }
      else if (event.keyCode === 87) {
-       this.rotateYaw(-playerYawRotationSpeed);
+       this.frameBit.addPlayerLookInput({ x: 0, y: -0.01 });
      }
      else if (event.keyCode === 83) {
-       this.rotateYaw(playerYawRotationSpeed);
+       this.frameBit.addPlayerLookInput({ x: 0, y: 0.01 });
      }
   }
 
