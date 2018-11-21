@@ -1,6 +1,6 @@
 import { WebGLRenderer, Scene } from 'three';
 import { PlayerEntity } from './PlayerEntity';
-import { frameBit, FrameDataSnaffleBit } from '../../index';
+import { frameBit, FrameDataSnaffleBit, playerMoveEvent } from '../../index';
 import Stats from 'stats.js';
 import ResizeObserver from 'resize-observer-polyfill';
 import { Level } from './Level';
@@ -47,6 +47,7 @@ export class Display {
     const end = performance.now();
     const frameLengthMiliseconds = end - start;
     this.frameBit.computeFrameData(frameLengthMiliseconds);
+    playerMoveEvent.notify();
     this.stats.end();
     window.requestAnimationFrame(this.renderFrame);
   };

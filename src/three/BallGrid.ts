@@ -5,7 +5,8 @@ import { oddBoxSquareMaterial, evenBoxSquareMaterial } from './staticMaterial';
 export class BallGrid extends Object3D {
   constructor() {
     super();
-    this.buildGrid(10, 10);
+    this.buildGrid(20, 20);
+    this.rotateX(Math.PI);
   }
 
   private buildGrid (xCount: number, yCount: number) {

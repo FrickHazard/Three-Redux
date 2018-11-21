@@ -2,9 +2,9 @@ import React from 'react';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { MainCanvas } from './MainCanvas';
-import { StateType } from '../state/reducer/index';
-import { ActionType } from '../state/reducer/types';
-import { setBallPosition } from '../state/action/ball';
+import { StateType } from '../state/redux/reducer/index';
+import { ActionType } from '../state/redux/reducer/types';
+import { setBallPosition } from '../state/redux/action/ball';
 
 type State = {
   inputX: number;

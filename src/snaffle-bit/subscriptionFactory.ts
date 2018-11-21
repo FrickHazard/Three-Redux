@@ -1,4 +1,4 @@
-import { Subscribe, Unsubscribe } from './index';
+import { Subscribe } from './index';
 
 export function createSubscribeAndSignalChangeFunctions<T extends any[]>()
 : { subscribe: Subscribe<T>, signalChange: (...input : T) => void} {
@@ -11,7 +11,7 @@ export function createSubscribeAndSignalChangeFunctions<T extends any[]>()
     }
   }
 
-  function subscribe(listener: () => void) {
+  function subscribe(listener: ((...input : T) => void)) {
 
     let isSubscribed = true
 

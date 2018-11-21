@@ -8,7 +8,7 @@ export type Unsubscribe = () => void;
 
 export type Subscribe<T extends any[]> = (listenerCallback: (...input: T) => void) => Unsubscribe;
 
-type DataStoreSubscribe = Subscribe<[]>;
+type DataStoreSubscribe = Subscribe<any[]>;
 
 export interface Observable {
   subscribe: Subscribe<any>;

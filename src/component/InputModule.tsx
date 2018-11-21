@@ -1,52 +1,82 @@
 import React from 'react';
-import { frameBit, FrameDataSnaffleBit } from '../../index';
+import { inputDataStore } from '../../index';
 
-class InputModuleComponent extends React.Component<{}> {
-  private frameBit: FrameDataSnaffleBit = frameBit.createRoot([
-    {
-      selector: () => null,
-      callback: () => {},
-    }
-  ]);
+class InputModuleComponent extends React.Component {
   componentDidMount() {
     document.addEventListener('keydown', this.onKeyDown);
+    document.addEventListener('keyup', this.onKeyUp);
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.onKeyDown);
+    document.removeEventListener('keyup', this.onKeyUp);
   }
 
   onKeyDown = (event: KeyboardEvent) => {
     if (event.keyCode === 38) {
-      this.frameBit.addPlayerMovementInput({ x: 0, y:0, z: -1 });
+      inputDataStore.setMoveBack(true);
      }
      else if (event.keyCode === 40) {
-       this.frameBit.addPlayerMovementInput({ x: 0, y:0, z: 1 });
+       inputDataStore.setMoveFoward(true);
      }
      else if (event.keyCode === 37) {
-       this.frameBit.addPlayerMovementInput({ x: 1, y: 0, z: 0 });
+       inputDataStore.setMoveRight(true);
      }
      else if (event.keyCode === 39) {
-       this.frameBit.addPlayerMovementInput({ x: -1, y: 0, z: 0 });
+       inputDataStore.setMoveLeft(true);
      }
      else if (event.keyCode === 33) {
-       this.frameBit.addPlayerMovementInput({ x: 0, y: 1, z: 0 });
+       inputDataStore.setMoveUp(true);
      }
      else if (event.keyCode === 34) {
-       this.frameBit.addPlayerMovementInput({ x: 0, y: -1, z: 0});
+       inputDataStore.setMoveDown(true);
      }
  
      else if (event.keyCode === 65) {
-       this.frameBit.addPlayerLookInput({ x: -0.01, y: 0 });
+       inputDataStore.setLookDown(true);
      }
      else if (event.keyCode === 68) {
-       this.frameBit.addPlayerLookInput({ x: 0.01, y: 0 });
+       inputDataStore.setLookUp(true);
      }
      else if (event.keyCode === 87) {
-       this.frameBit.addPlayerLookInput({ x: 0, y: -0.01 });
+       inputDataStore.setLookLeft(true);
      }
      else if (event.keyCode === 83) {
-       this.frameBit.addPlayerLookInput({ x: 0, y: 0.01 });
+       inputDataStore.setLookRight(true);
+     }
+  }
+
+  onKeyUp = (event: KeyboardEvent) => {
+    if (event.keyCode === 38) {
+      inputDataStore.setMoveBack(false);
+     }
+     else if (event.keyCode === 40) {
+       inputDataStore.setMoveFoward(false);
+     }
+     else if (event.keyCode === 37) {
+       inputDataStore.setMoveRight(false);
+     }
+     else if (event.keyCode === 39) {
+       inputDataStore.setMoveLeft(false);
+     }
+     else if (event.keyCode === 33) {
+       inputDataStore.setMoveUp(false);
+     }
+     else if (event.keyCode === 34) {
+       inputDataStore.setMoveDown(false);
+     }
+ 
+     else if (event.keyCode === 65) {
+       inputDataStore.setLookDown(false);
+     }
+     else if (event.keyCode === 68) {
+       inputDataStore.setLookUp(false);
+     }
+     else if (event.keyCode === 87) {
+       inputDataStore.setLookLeft(false);
+     }
+     else if (event.keyCode === 83) {
+       inputDataStore.setLookRight(false);
      }
   }
 
