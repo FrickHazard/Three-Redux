@@ -1,31 +1,37 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Panel from 'react-bootstrap/lib/Panel';
+import { StateType } from '../state/redux/reducer';
+import { PlayerTransformPanel } from './PlayerTransformPanel';
 
-// type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+type Props = ReturnType<typeof mapStateToProps>;
 
-class RightToolbarComponent extends React.Component<{}> {
+class RightToolbarComponent extends React.Component<Props> {
 
   render () {
+    const width = this.props.rightToolbarStatus ? this.props.rightToolbarStatus : 0;
     return (
-      <div style={{
+      <Panel style={{
+        margin: '0, 0, 0, 0',
         height: '100%',
-        width: '0',
+        width,
         position: 'fixed',
         zIndex: 1,
         top: 0,
-        left: 0,
+        right: 0,
         backgroundColor: '#111',
         overflowX: 'hidden',
         transition: '0.5s',
         paddingTop: '60px',
       }}>
-        <Panel>
-
-        </Panel>
-      </div>
+        <PlayerTransformPanel/>
+      </Panel>
     );
   }
 }
 
-export const RightToolbar = connect(() => ({}))(RightToolbarComponent);
+const mapStateToProps = (state: StateType) =>({
+  rightToolbarStatus: state.mainMenu.rightToolbarStatus,
+});
+
+export const RightToolbar = connect(mapStateToProps)(RightToolbarComponent);

@@ -14,8 +14,8 @@ class MainComponent extends React.Component<Props> {
       <div>
         <InputModule />
         <Toolbar />
-        <RightToolbar />
         <MainCanvas/>
+        <RightToolbar />
       </div>
     );
   }

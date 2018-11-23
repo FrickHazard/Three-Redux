@@ -7,3 +7,7 @@ export const setBallPosition = (x: number, y: number, z: number) => {
     z,
   }]);
 };
+
+export const setRightToolbarStatus = (status: null | number) => {
+  return actionAtlas.setRightToolbarStatus(status);
+}

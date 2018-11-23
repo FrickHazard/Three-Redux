@@ -1,7 +1,11 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Display } from '../three/Display';
+import { StateType } from '../state/redux/reducer';
 
-class MainCanvasComponent extends React.Component {
+type Props = ReturnType<typeof mapStateToProps>;
+
+class MainCanvasComponent extends React.Component<Props> {
   public display: Display | null = null;
   public container: HTMLDivElement | null = null;
   componentDidMount() {
@@ -10,6 +14,7 @@ class MainCanvasComponent extends React.Component {
     }
   }
   render () {
+    const marginRight = this.props.rightToolbarStatus ? this.props.rightToolbarStatus : 0;
     return (
       <div
         style={{
@@ -21,6 +26,7 @@ class MainCanvasComponent extends React.Component {
           lineHeight: 0,
           cursor: 'crosshair',
           userSelect: 'none',
+          marginRight,
         }}
         ref={(ref) => this.container = ref}
       >
@@ -29,4 +35,8 @@ class MainCanvasComponent extends React.Component {
   }
 }
 
-export const MainCanvas = (MainCanvasComponent);
+const mapStateToProps = (state: StateType) => ({
+  rightToolbarStatus: state.mainMenu.rightToolbarStatus,
+});
+
+export const MainCanvas = connect(mapStateToProps)(MainCanvasComponent);

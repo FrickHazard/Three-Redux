@@ -24,6 +24,7 @@ export class PlayerEntity extends Object3D {
     this.headCamera.position.add(new Vector3(0, playerHeight, 0));
     this.playerTransformLogSnaffleBit = playerTransformLogSnaffleBitProvider.createRoot();
     this.playerMoveEventUnsubscribe = playerMoveEvent.subscribe(this.setTransform);
+    this.logTransform();
   }
 
   private setTransform = (input: {
@@ -36,17 +37,17 @@ export class PlayerEntity extends Object3D {
       input.movementAxisInput.x === 0 &&
       input.movementAxisInput.y === 0 &&
       input.movementAxisInput.z === 0) return;
-    this.yaw += input.lookAxisInput.x;
-    this.quaternion.setFromEuler(new Euler(this.yaw, 0, 0));
     this.pitch += input.lookAxisInput.y;
-    this.headCamera.quaternion.setFromEuler(new Euler(0, this.pitch, 0));
+    this.headCamera.quaternion.setFromEuler(new Euler(this.pitch, 0, 0));
+    this.yaw += input.lookAxisInput.x;
+    this.quaternion.setFromEuler(new Euler(0, this.yaw, 0));
+    this.translateX(input.movementAxisInput.x);
+    this.translateY(input.movementAxisInput.y);
+    this.translateZ(input.movementAxisInput.z);
+    this.logTransform();
+  }
 
-    const movementVector = new Vector3().set(
-      input.movementAxisInput.x,
-      input.movementAxisInput.y,
-      input.movementAxisInput.z)
-      .applyQuaternion(this.headCamera.quaternion);   
-    this.position.add(movementVector);
+  private logTransform() {
     this.playerTransformLogSnaffleBit.logPlayerTransform({
       position: {
         x: this.position.x,
