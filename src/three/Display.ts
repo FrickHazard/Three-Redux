@@ -20,6 +20,9 @@ export class Display {
     this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
     this.renderer.setClearColor(0x272727);
     this.container.appendChild(this.stats.dom);
+    // stick stats to top left of canvas
+    this.stats.dom.style.top = '';
+    this.stats.dom.style.left = '';
     this.container.appendChild(this.renderer.domElement);
     this.scene = new Scene();
     this.scene.add(new Level());

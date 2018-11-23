@@ -1,40 +1,34 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Navbar from 'react-bootstrap/lib/Navbar';
-import Button from 'react-bootstrap/lib/Button';
 import { Dispatch, bindActionCreators } from 'redux';
 import { ActionType } from '../state/redux/reducer/types';
 import { StateType } from '../state/redux/reducer';
-import { setRightToolbarStatus } from '../state/redux/action/ball';
+import { setRightToolbarOpen } from '../state/redux/action/ball';
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 class ToolbarComponent extends React.Component<Props> {
 
   toggleRightToolBar = () => {
-    const status = this.props.rightToolbarStatus ? null: 250;
-    this.props.setRightToolbarStatus(status)
+    this.props.setRightToolbarOpen(!this.props.rightToolbarOpen)
   }
 
   render () {
     return (
-      <Navbar inverse style={{ marginBottom: 0 }}>
-        <Navbar.Header>
-          <Navbar.Brand>
-            <Button bsStyle="primary" onClick={this.toggleRightToolBar}>Toolbar</Button>
-          </Navbar.Brand>
-        </Navbar.Header>
-      </Navbar>
+      <div style={{ marginBottom: 0, height: `${this.props.headerHeight}px` }}>
+        <button onClick={this.toggleRightToolBar}>Toolbar</button>
+      </div>
     );
   }
 }
 
 const mapStateToProps = (state: StateType) =>({
-  rightToolbarStatus: state.mainMenu.rightToolbarStatus,
+  rightToolbarOpen: state.mainMenu.rightToolbarOpen,
+  headerHeight: state.mainMenu.headerHeight,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<ActionType>) => bindActionCreators({
-  setRightToolbarStatus,
+  setRightToolbarOpen,
 }, dispatch);
 
 export const Toolbar = connect(mapStateToProps, mapDispatchToProps)(ToolbarComponent);

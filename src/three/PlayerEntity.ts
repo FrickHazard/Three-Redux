@@ -31,12 +31,6 @@ export class PlayerEntity extends Object3D {
     movementAxisInput: Point3D,
     lookAxisInput: Point2D,
   }) => {
-    if (
-      input.lookAxisInput.x == 0 &&
-      input.lookAxisInput.y == 0 &&
-      input.movementAxisInput.x === 0 &&
-      input.movementAxisInput.y === 0 &&
-      input.movementAxisInput.z === 0) return;
     this.pitch += input.lookAxisInput.y;
     this.headCamera.quaternion.setFromEuler(new Euler(this.pitch, 0, 0));
     this.yaw += input.lookAxisInput.x;

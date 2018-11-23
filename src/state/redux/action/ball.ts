@@ -8,6 +8,6 @@ export const setBallPosition = (x: number, y: number, z: number) => {
   }]);
 };
 
-export const setRightToolbarStatus = (status: null | number) => {
-  return actionAtlas.setRightToolbarStatus(status);
+export const setRightToolbarOpen = (open: boolean) => {
+  return actionAtlas.setRightToolbarOpen(open);
 }
