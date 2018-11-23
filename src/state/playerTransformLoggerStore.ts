@@ -2,7 +2,7 @@ import { DataStore } from '../snaffle-bit'
 import { createSubscribeAndSignalChangeFunctions } from '../snaffle-bit/subscriptionFactory';
 import { Point3D, Point2D } from '../library/basicDataTypes';
 
-type PlayerTransformData = Readonly<{
+export type PlayerTransformData = Readonly<{
   readonly pitch: number;
   readonly yaw: number;
   readonly position: Point3D;
@@ -20,7 +20,7 @@ export const createPlayerTransformLogDataStore = (): PlayerTransformLoggerDataSt
   
   return {
     logPlayerTransform: function(playerTransformData: PlayerTransformData) {
-      state = [ ...state, playerTransformData];
+      state = [playerTransformData];
       signalChange();
     },
     getState: () => state,

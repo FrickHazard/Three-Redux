@@ -4,7 +4,6 @@ import { playerTransformLogSnaffleBitProvider, PlayerTransformLogSnaffleBit, pla
 import { Point3D, Point2D } from '../library/basicDataTypes';
 import { Unsubscribe } from '../snaffle-bit';
 
-const playerSpeed = 3;
 const playerHeight = 2;
 const nearClippingPlaneDistance = 0.1;
 const farClippingPlaneDistance = 500;
@@ -31,17 +30,22 @@ export class PlayerEntity extends Object3D {
     movementAxisInput: Point3D,
     lookAxisInput: Point2D,
   }) => {
-    const previousHeadEuler = new Euler().setFromQuaternion(this.headCamera.quaternion);
-    this.headCamera.quaternion.setFromEuler(new Euler(0, previousHeadEuler.y + input.lookAxisInput.y, 0));
-    const previousEuler = new Euler().setFromQuaternion(this.quaternion);
+    if (
+      input.lookAxisInput.x == 0 &&
+      input.lookAxisInput.y == 0 &&
+      input.movementAxisInput.x === 0 &&
+      input.movementAxisInput.y === 0 &&
+      input.movementAxisInput.z === 0) return;
+    this.yaw += input.lookAxisInput.x;
+    this.quaternion.setFromEuler(new Euler(this.yaw, 0, 0));
+    this.pitch += input.lookAxisInput.y;
+    this.headCamera.quaternion.setFromEuler(new Euler(0, this.pitch, 0));
 
-    this.quaternion.setFromEuler(new Euler(previousEuler.x + input.lookAxisInput.x, 0, 0));
     const movementVector = new Vector3().set(
       input.movementAxisInput.x,
       input.movementAxisInput.y,
       input.movementAxisInput.z)
-      .applyQuaternion(this.headCamera.quaternion)
-      .multiplyScalar(playerSpeed);        
+      .applyQuaternion(this.headCamera.quaternion);   
     this.position.add(movementVector);
     this.playerTransformLogSnaffleBit.logPlayerTransform({
       position: {
@@ -49,8 +53,8 @@ export class PlayerEntity extends Object3D {
         y: this.position.y,
         z: this.position.z,
       },
-      pitch: input.lookAxisInput.x,
-      yaw: input.lookAxisInput.y,
+      pitch: this.pitch,
+      yaw: this.yaw,
     });
   }
 

@@ -3,8 +3,8 @@ import { FrameDataStore  } from './frameDataStore';
 import { Point3D, Point2D } from '../library/basicDataTypes';
 import { InputDataStore } from './inputStore';
 
-const moveSpeedPerSecond = 0.003;
-const lookSpeedPerSecond = 0.001;
+const moveSpeedPerSecond = 0.9;
+const lookSpeedPerSecond = 0.01;
 
 export const createPlayerMoveEvent = (
   frameDataStore: FrameDataStore,
@@ -18,7 +18,7 @@ export const createPlayerMoveEvent = (
   return {
     notify: function(){
       const frameData = frameDataStore.getState();
-      const frameDeltaTime = frameData.deltaTime === 0 ? 0.000001 : frameData.deltaTime;
+      const frameDeltaTime = frameData.deltaTime;
       const inputData = inputDataStore.getState();
       const moveUpValue = inputData.playerMovementInput.up ? 1 : 0;
       const moveDownValue = inputData.playerMovementInput.down ? -1 : 0;
@@ -32,13 +32,13 @@ export const createPlayerMoveEvent = (
       const lookRightValue = inputData.playerLookInput.right ? 1 : 0;
       signalChange({ 
         movementAxisInput: {
-          x: ((moveLeftValue + moveRightValue) / frameDeltaTime) * moveSpeedPerSecond,
-          y: ((moveUpValue + moveDownValue) / frameDeltaTime) * moveSpeedPerSecond,
-          z: ((moveBackValue + moveForwardValue) / frameDeltaTime) * moveSpeedPerSecond,
+          x: ((moveLeftValue + moveRightValue) * frameDeltaTime) * moveSpeedPerSecond,
+          y: ((moveUpValue + moveDownValue) * frameDeltaTime) * moveSpeedPerSecond,
+          z: ((moveBackValue + moveForwardValue) * frameDeltaTime) * moveSpeedPerSecond,
         },
         lookAxisInput: {
-          x: ((lookLeftValue + lookRightValue) / frameDeltaTime) * lookSpeedPerSecond, 
-          y: ((lookUpValue + lookDownValue) / frameDeltaTime) * lookSpeedPerSecond,
+          x: ((lookLeftValue + lookRightValue) * frameDeltaTime) * lookSpeedPerSecond, 
+          y: ((lookUpValue + lookDownValue) * frameDeltaTime) * lookSpeedPerSecond,
         },
       });
     },

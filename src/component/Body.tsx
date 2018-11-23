@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { MainCanvas } from './MainCanvas';
 import { Toolbar } from './Toolbar';
 import { InputModule } from './InputModule';
+import { RightToolbar } from './RightToolbar';
 import { StateType } from '../state/redux/reducer/index';
 
 type Props = ReturnType<typeof mapStateToProps>;
@@ -13,6 +14,7 @@ class MainComponent extends React.Component<Props> {
       <div>
         <InputModule />
         <Toolbar />
+        <RightToolbar />
         <MainCanvas/>
       </div>
     );
