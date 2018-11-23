@@ -3,7 +3,7 @@ import { FrameDataStore  } from './frameDataStore';
 import { Point3D, Point2D } from '../library/basicDataTypes';
 import { InputDataStore } from './inputStore';
 
-const moveSpeedPerSecond = 0.9;
+const moveSpeedPerSecond = 0.5;
 const lookSpeedPerSecond = 0.01;
 
 export const createPlayerMoveEvent = (

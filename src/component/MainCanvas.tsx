@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Display } from '../three/Display';
 import { StateType } from '../state/redux/reducer';
-import { timingSafeEqual } from 'crypto';
 
 type Props = ReturnType<typeof mapStateToProps>;
 
@@ -24,7 +23,6 @@ class MainCanvasComponent extends React.Component<Props> {
           width: `calc(100% - ${rightShift}px)`,
           height: `calc(100% - ${this.props.headerHeight}px)`,
           position: 'absolute',
-          objectFit: 'scale-down',
           zIndex: 0,
           lineHeight: 0,
           cursor: 'crosshair',

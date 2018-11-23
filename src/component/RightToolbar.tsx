@@ -14,7 +14,6 @@ class RightToolbarComponent extends React.Component<Props> {
       this.props.rightToolbarWidth : 0;
     return (
       <div style={{
-        margin: '0, 0, 0, 0',
         height: '100%',
         width,
         position: 'fixed',
@@ -25,9 +24,8 @@ class RightToolbarComponent extends React.Component<Props> {
         overflowX: 'hidden',
         transition: '0.5s',
         paddingTop: '60px',
-        // paddingLeft,
       }}>
-        <PlayerTransformPanel/>
+        {this.props.rightToolbarOpen ? <PlayerTransformPanel/> : null}
       </div>
     );
   }
