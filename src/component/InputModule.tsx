@@ -28,16 +28,16 @@ class InputModuleComponent extends React.Component {
        inputDataStore.setMoveFoward(value);
      }
      else if (event.keyCode === 37) {
-       inputDataStore.setMoveRight(value);
-     }
-     else if (event.keyCode === 39) {
        inputDataStore.setMoveLeft(value);
      }
-     else if (event.keyCode === 33) {
-       inputDataStore.setMoveUp(value);
+     else if (event.keyCode === 39) {
+       inputDataStore.setMoveRight(value);
      }
      else if (event.keyCode === 34) {
        inputDataStore.setMoveDown(value);
+     }
+     else if (event.keyCode === 33) {
+       inputDataStore.setMoveUp(value);
      }
  
      else if (event.keyCode === 65) {
