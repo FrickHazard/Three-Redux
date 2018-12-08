@@ -34,7 +34,7 @@ export class PlayerEntity extends Object3D {
     this.pitch += input.lookAxisInput.y;
     this.headCamera.quaternion.setFromEuler(new Euler(this.pitch, 0, Math.PI));
     this.yaw += input.lookAxisInput.x;
-    this.quaternion.setFromEuler(new Euler(0, this.yaw, 0));
+    this.quaternion.setFromEuler(new Euler(0, -this.yaw, 0));
     this.translateX(input.movementAxisInput.x);
     this.translateY(input.movementAxisInput.y);
     this.translateZ(input.movementAxisInput.z);

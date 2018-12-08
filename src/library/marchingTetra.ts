@@ -22,22 +22,17 @@ import { Geometry, Vector3, Face3 } from 'three';
 import { Point3D } from './basicDataTypes';
 import { ScalarField } from './ScalarField';
 import { AABB } from './AABB';
+import { type } from 'os';
 
-interface Point3DWithValue extends Point3D {
- value: number;
+export interface Point3DWithValue extends Point3D {
+  value: number;
 };
 
-interface Tetrahedron {
+export interface Tetrahedron {
   p0: Point3DWithValue;
   p1: Point3DWithValue;
   p2: Point3DWithValue;
   p3: Point3DWithValue;
-}
-
-function clamp01(value: number) {
-  if (value < 0) return 0;
-  if (value > 1) return 1;
-  return value;
 }
 
 export function buildChunk (
@@ -327,4 +322,33 @@ export function buildVert(
         z = point1.z * oneMinusInterpolation + point2.z * interpolation;
     }
     return { x, y, z };
+}
+
+export type DensityValue = number;
+export type DensityCubeSample = [
+  DensityValue, DensityValue, DensityValue, DensityValue,
+  DensityValue, DensityValue, DensityValue, DensityValue
+];
+export type CubeIndex = 0 | 1 | 2| 3 | 4| 5 | 6 | 7;
+
+export type DensityTetrahedronSample = {
+  p0: { value: DensityValue, cubeIndex: CubeIndex };
+  p1: { value: DensityValue, cubeIndex: CubeIndex };
+  p2: { value: DensityValue, cubeIndex: CubeIndex };
+  p3: { value: DensityValue, cubeIndex: CubeIndex };
+};
+
+export function getTetrahedronSamplesFromCubeSample(cube: DensityCubeSample): DensityTetrahedronSample[] {
+  const wrap = (d: DensityValue, index: CubeIndex) => {
+    return { value: d, cubeIndex: index};
+  } 
+  const result: DensityTetrahedronSample[] = [
+    { p0: wrap(cube[0], 0), p1: wrap(cube[7], 7), p2: wrap(cube[3], 3), p3: wrap(cube[2], 2) },
+    { p0: wrap(cube[0], 0), p1: wrap(cube[7], 7), p2: wrap(cube[2], 2), p3: wrap(cube[6], 6) },
+    { p0: wrap(cube[0], 0), p1: wrap(cube[4], 4), p2: wrap(cube[7], 7), p3: wrap(cube[6], 6) },
+    { p0: wrap(cube[0], 0), p1: wrap(cube[1], 1), p2: wrap(cube[6], 6), p3: wrap(cube[2], 2) },
+    { p0: wrap(cube[0], 0), p1: wrap(cube[4], 4), p2: wrap(cube[6], 6), p3: wrap(cube[1], 1) },
+    { p0: wrap(cube[5], 5), p1: wrap(cube[1], 1), p2: wrap(cube[6], 6), p3: wrap(cube[4], 4) }
+  ];
+  return result;
 }

@@ -9,7 +9,9 @@ import { reduxBit, ReduxSnaffleBit } from '../../index';
 import { BallGrid } from './BallGrid';
 import { buildChunk } from '../library/marchingTetra';
 import { createVoxelScalarField } from '../library/VoxelScalarField';
+import { DensityCubeSampleVisual } from '../three/DensityCubeSampleDebug';
 import { createAABBGeometry } from '../library/aabbDebug';
+import { TetrahedronVisual } from '../three/Tetrahedra';
 
 interface UpdateData {
   x: number;
@@ -36,26 +38,55 @@ export class Level extends Group {
       minY: -1.5,
       minZ: -1.5,
     };
-    const test = new Mesh(buildChunk(
-      createVoxelScalarField({ x: 0, y: 0, z: 0 }, 1,
-        [
-          [[1, 1, 1], [0, 0, 0], [0, 0, 0]],
-          [[1, 1, 1], [1, 1, 1], [0, 0, 0]],
-          [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
-        ],
-      ),
-      aabb,
-      3,
-      1,
-    ), new MeshPhongMaterial({ color: 0xffffff, side: DoubleSide }));
+    // const test = new Mesh(buildChunk(
+    //   createVoxelScalarField({ x: 0, y: 0, z: 0 }, 1,
+    //     [
+    //       [[1, 1, 1], [0, 0, 0], [0, 0, 0]],
+    //       [[0, 0, 0], [1, 1, 1], [0, 0, 0]],
+    //       [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+    //     ],
+    //   ),
+    //   aabb,
+    //   3,
+    //   1,
+    // ), new MeshPhongMaterial({ color: 0xffffff, side: DoubleSide }));
+    //     this.add(test);
     this.add(new LineSegments(createAABBGeometry(aabb, 3),
       new LineBasicMaterial()));
-    this.add(test);
+    this.add(new TetrahedronVisual({
+      p0: {
+        value: 0,
+        x: - 1.5,
+        y: - 0.5,
+        z: - 1.5
+      },
+      p1: {
+        value: 0,
+        x: - 1.5,
+        y: - 0.5,
+        z: - 0.5
+      },
+      p2: {
+        value: 0,
+        x: - 1.5,
+        y:   0.5,
+        z: - 1.5
+      },
+      p3: {
+        value: 0,
+        x: - 0.5,
+        y:   0.5,
+        z: - 0.5
+      },
+    }, new MeshPhongMaterial({ side: DoubleSide, color: 0xff0000 })));
     // this.add(this.ball);
     // this.add(new BallGrid());
     this.add(this.sun);
     this.add(this.ambientLight);
     this.add(new PointLight(0x303030, 3));
+    this.add(new DensityCubeSampleVisual([
+      0, 0, 0, 0, 0, 0, 0, 0,
+    ]))
     const ballUpdate = {
       callback: this.update,
       selector: (state: StateType) => {
