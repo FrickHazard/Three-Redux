@@ -81,7 +81,7 @@ export function createVoxelScalarField(
       }
       return 0;
     },
-    gradientAt: function() { return 1; }
+    gradientAt: function() { return {x: 0, y: 0, z:0 }; }
 
   };
 }

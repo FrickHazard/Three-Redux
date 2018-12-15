@@ -12,6 +12,7 @@ import { createVoxelScalarField } from '../library/VoxelScalarField';
 import { DensityCubeSampleVisual } from '../three/DensityCubeSampleDebug';
 import { createAABBGeometry } from '../library/aabbDebug';
 import { TetrahedronVisual } from '../three/Tetrahedra';
+import { test } from '../library/dualContour';
 
 interface UpdateData {
   x: number;
@@ -81,9 +82,9 @@ export class Level extends Group {
     }, new MeshPhongMaterial({ side: DoubleSide, color: 0xff0000 })));
     // this.add(this.ball);
     // this.add(new BallGrid());
+    this.add(test());
     this.add(this.sun);
     this.add(this.ambientLight);
-    this.add(new PointLight(0x303030, 3));
     this.add(new DensityCubeSampleVisual([
       0, 0, 0, 0, 0, 0, 0, 0,
     ]))
