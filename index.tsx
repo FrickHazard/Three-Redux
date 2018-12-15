@@ -1,7 +1,8 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
-import { createStore } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
+import thunk from 'redux-thunk';
 import { Body } from './src/component/Body';
 import { rootReducer } from './src/state/redux/reducer/index';
 import { createSnaffleBitProvider } from './src/snaffle-bit/index';
@@ -10,7 +11,7 @@ import { createFrameDataStore } from './src/state/frameDataStore';
 import { createPlayerMoveEvent } from './src/state/playerMoveEvent';
 import { createInputDataStore } from './src/state/inputStore';
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(thunk));
 export const reduxBit = createSnaffleBitProvider(store, { dispatch: store.dispatch });
 export type ReduxSnaffleBit = ReturnType<typeof reduxBit.createRoot>;
 

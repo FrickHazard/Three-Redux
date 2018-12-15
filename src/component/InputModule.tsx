@@ -46,10 +46,10 @@ class InputModuleComponent extends React.Component {
      else if (event.keyCode === 68) {
        inputDataStore.setLookRight(value);
      }
-     else if (event.keyCode === 87) {
+     else if (event.keyCode === 83) {
        inputDataStore.setLookDown(value);
      }
-     else if (event.keyCode === 83) {
+     else if (event.keyCode === 87) {
        inputDataStore.setLookUp(value);
      }
   }

@@ -1,4 +1,4 @@
-import { ActionType } from './types';
+import { ActionType } from '../action';
 
 export type ColorState = Readonly<{
   color: number;

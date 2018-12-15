@@ -1,4 +1,4 @@
-import { ActionType } from "./types";
+import { ActionType } from "../action";
 
 type Ball = {
   x: number,
