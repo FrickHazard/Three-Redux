@@ -40,13 +40,17 @@ export class Display {
     this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.updateCameraAspect();
+    this.render();
+  }
+
+  private render() {
     this.renderer.render(this.scene, this.player.headCamera);
   }
   
   private renderFrame = () => {
     this.stats.begin();
     const start = performance.now();
-    this.renderer.render(this.scene, this.player.headCamera);
+    this.render();
     const end = performance.now();
     const frameLengthMiliseconds = end - start;
     this.frameBit.computeFrameData(frameLengthMiliseconds);
