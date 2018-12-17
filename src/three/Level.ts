@@ -52,42 +52,42 @@ export class Level extends Group {
     //   1,
     // ), new MeshPhongMaterial({ color: 0xffffff, side: DoubleSide }));
     //     this.add(test);
-    this.add(new LineSegments(createAABBGeometry(aabb, 3),
-      new LineBasicMaterial()));
-    this.add(new TetrahedronVisual({
-      p0: {
-        value: 0,
-        x: - 1.5,
-        y: - 0.5,
-        z: - 1.5
-      },
-      p1: {
-        value: 0,
-        x: - 1.5,
-        y: - 0.5,
-        z: - 0.5
-      },
-      p2: {
-        value: 0,
-        x: - 1.5,
-        y:   0.5,
-        z: - 1.5
-      },
-      p3: {
-        value: 0,
-        x: - 0.5,
-        y:   0.5,
-        z: - 0.5
-      },
-    }, new MeshPhongMaterial({ side: DoubleSide, color: 0xff0000 })));
+    // this.add(new LineSegments(createAABBGeometry(aabb, 3),
+    //  new LineBasicMaterial()));
+    // this.add(new TetrahedronVisual({
+    //   p0: {
+    //     value: 0,
+    //     x: - 1.5,
+    //     y: - 0.5,
+    //     z: - 1.5
+    //   },
+    //   p1: {
+    //     value: 0,
+    //     x: - 1.5,
+    //     y: - 0.5,
+    //     z: - 0.5
+    //   },
+    //   p2: {
+    //     value: 0,
+    //     x: - 1.5,
+    //     y:   0.5,
+    //     z: - 1.5
+    //   },
+    //   p3: {
+    //     value: 0,
+    //     x: - 0.5,
+    //     y:   0.5,
+    //     z: - 0.5
+    //   },
+    // }, new MeshPhongMaterial({ side: DoubleSide, color: 0xff0000 })));
     // this.add(this.ball);
     // this.add(new BallGrid());
     this.add(test());
     this.add(this.sun);
     this.add(this.ambientLight);
-    this.add(new DensityCubeSampleVisual([
-      0, 0, 0, 0, 0, 0, 0, 0,
-    ]))
+    // this.add(new DensityCubeSampleVisual([
+    //   0, 0, 0, 0, 0, 0, 0, 0,
+    // ]))
     const ballUpdate = {
       callback: this.update,
       selector: (state: StateType) => {
