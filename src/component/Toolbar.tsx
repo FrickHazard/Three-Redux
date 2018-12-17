@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch, bindActionCreators } from 'redux';
-import { ActionType } from '../state/redux/reducer/types';
+import { ActionType } from '../state/redux/action';
 import { StateType } from '../state/redux/reducer';
-import { setRightToolbarOpen } from '../state/redux/action/ball';
+import { actionAtlas, logState } from '../state/redux/action/index';
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
@@ -17,6 +17,7 @@ class ToolbarComponent extends React.Component<Props> {
     return (
       <div style={{ marginBottom: 0, height: `${this.props.headerHeight}px` }}>
         <button onClick={this.toggleRightToolBar}>Toolbar</button>
+        <button onClick={this.props.logState} >Log State</button>
       </div>
     );
   }
@@ -28,7 +29,8 @@ const mapStateToProps = (state: StateType) =>({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<ActionType>) => bindActionCreators({
-  setRightToolbarOpen,
+  setRightToolbarOpen: actionAtlas.setRightToolbarOpen,
+  logState: logState,
 }, dispatch);
 
 export const Toolbar = connect(mapStateToProps, mapDispatchToProps)(ToolbarComponent);

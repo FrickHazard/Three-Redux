@@ -5,18 +5,20 @@ import { Point3D } from './basicDataTypes';
 import { Face3, Geometry, Mesh, Vector3, MeshBasicMaterial } from 'three';
 import { flatten } from 'lodash';
 
-function adapt(v0: number, v1: number) {
-  return (0 - v0) / (v1 - v0);
-  // return 0.5;
+function adapt(valueVert0: number, valueVert1: number, isoLevel: number) {
+  return (isoLevel - valueVert0) / (valueVert1 - valueVert0);
 }
 
 function dualContour ( 
+  isoLevel: number,
   scalarField: ScalarField,
   aabb: AABB,
 ): Geometry {
+
   const vertArray: Point3D[] = []
   const vertIndices: number[][][] = [];
   const quads: number[][] = [];
+
   for (let x = aabb.minX; x < aabb.maxX; x++) {
     const xIndex = x - aabb.minX;
     vertIndices.push([]);
@@ -25,13 +27,14 @@ function dualContour (
       vertIndices[xIndex].push([]);
       for (let z = aabb.minZ; z < aabb.maxZ; z++) {
         const zIndex = z - aabb.minZ;
-        const vert = dual_contour_3d_find_best_vertex(scalarField, x, y, z)
+        const vert = getVertex(isoLevel, scalarField, x, y, z)
         if (vert === null) continue;
         vertArray.push(vert);
         vertIndices[xIndex][yIndex][zIndex] = vertArray.length - 1;
       }
     }
   }
+
   for (let x = aabb.minX; x < aabb.maxX; x++) {
     const xIndex = x - aabb.minX;
     for (let y = aabb.minY; y < aabb.maxY; y++) {
@@ -39,8 +42,8 @@ function dualContour (
       for (let z = aabb.minZ; z < aabb.maxZ; z++) {
         const zIndex = z - aabb.minZ;
         if (x > aabb.minX && y > aabb.minY) {
-          const solid1 = scalarField.valueAt(x, y, z + 0) > 0;
-          const solid2 = scalarField.valueAt(x, y, z + 1) > 0;
+          const solid1 = scalarField.valueAt(x, y, z + 0) > isoLevel;
+          const solid2 = scalarField.valueAt(x, y, z + 1) > isoLevel;
           if (solid1 !== solid2) {
             let quad = [
               vertIndices[xIndex - 1][yIndex - 1][zIndex],
@@ -55,8 +58,8 @@ function dualContour (
           }
         }
         if (x > aabb.minX && z > aabb.minZ) {
-          const solid1 = scalarField.valueAt(x, y + 0, z) > 0;
-          const solid2 = scalarField.valueAt(x, y + 1, z) > 0;
+          const solid1 = scalarField.valueAt(x, y + 0, z) > isoLevel;
+          const solid2 = scalarField.valueAt(x, y + 1, z) > isoLevel;
           if (solid1 !== solid2) {
             let quad = [
               vertIndices[xIndex - 1][yIndex][zIndex - 1],
@@ -71,8 +74,8 @@ function dualContour (
           }
         }
         if (y > aabb.minY && z > aabb.minZ) {
-          const solid1 = scalarField.valueAt(x + 0, y, z) > 0;
-          const solid2 = scalarField.valueAt(x + 1, y, z) > 0;
+          const solid1 = scalarField.valueAt(x + 0, y, z) > isoLevel;
+          const solid2 = scalarField.valueAt(x + 1, y, z) > isoLevel;
           if (solid1 !== solid2) {
             let quad = [
               vertIndices[xIndex][yIndex - 1][zIndex - 1],
@@ -104,13 +107,11 @@ function dualContour (
   return geometry;
 }
   
-function dual_contour_3d_find_best_vertex(
+function getVertex(
+  isoLevel: number,
   scalarField: ScalarField,
   x: number, y: number, z: number
 ): Point3D | null {
-    // if not ADAPTIVE:
-    //     return V3(x+0.5, y+0.5, z+0.5)
-
     // # Evaluate f at each corner
     const vertValues: number[][][] = [[[], []], [[], []]];
     // v = np.empty((2, 2, 2))
@@ -128,15 +129,16 @@ function dual_contour_3d_find_best_vertex(
     for (let edgeXIndex = 0; edgeXIndex < 2; edgeXIndex ++) {
       for (let edgeYIndex = 0; edgeYIndex < 2; edgeYIndex ++) {
         // iso check instead of 0
-        if (vertValues[edgeXIndex][edgeYIndex][0] > 0 !==
-            vertValues[edgeXIndex][edgeYIndex][1] > 0) {
+        if (vertValues[edgeXIndex][edgeYIndex][0] > isoLevel !==
+            vertValues[edgeXIndex][edgeYIndex][1] > isoLevel) {
             changes.push(({
               x: x + edgeXIndex,
               y: y + edgeYIndex,
               // linearly interpolate to iso level
               z: z + adapt(
                 vertValues[edgeXIndex][edgeYIndex][0],
-                vertValues[edgeXIndex][edgeYIndex][1]) 
+                vertValues[edgeXIndex][edgeYIndex][1],
+                isoLevel) 
             }));
         }
       }
@@ -145,14 +147,14 @@ function dual_contour_3d_find_best_vertex(
     for (let edgeXIndex = 0; edgeXIndex < 2; edgeXIndex ++) {
       for (let edgeZIndex = 0; edgeZIndex < 2; edgeZIndex ++) {
         // iso check instead of 0
-        if (vertValues[edgeXIndex][0][edgeZIndex] > 0 !==
-            vertValues[edgeXIndex][1][edgeZIndex] > 0) {
+        if (vertValues[edgeXIndex][0][edgeZIndex] > isoLevel !==
+            vertValues[edgeXIndex][1][edgeZIndex] > isoLevel) {
             changes.push(({
               x: x + edgeXIndex,
               y: y + adapt(
                 vertValues[edgeXIndex][0][edgeZIndex],
-                vertValues[edgeXIndex][1][edgeZIndex]),
-              // linearly interpolate to iso level
+                vertValues[edgeXIndex][1][edgeZIndex],
+                isoLevel),
               z: z + edgeZIndex 
             }));
         }
@@ -161,14 +163,14 @@ function dual_contour_3d_find_best_vertex(
     for (let edgeYIndex = 0; edgeYIndex < 2; edgeYIndex ++) {
       for (let edgeZIndex = 0; edgeZIndex < 2; edgeZIndex ++) {
         // iso check instead of 0
-        if (vertValues[0][edgeYIndex][edgeZIndex] > 0 !==
-            vertValues[1][edgeYIndex][edgeZIndex] > 0) {
+        if (vertValues[0][edgeYIndex][edgeZIndex] > isoLevel !==
+            vertValues[1][edgeYIndex][edgeZIndex] > isoLevel) {
             changes.push(({
-              x: x + + adapt(
+              x: x + adapt(
                 vertValues[0][edgeYIndex][edgeZIndex],
-                vertValues[1][edgeYIndex][edgeZIndex]),
+                vertValues[1][edgeYIndex][edgeZIndex],
+                isoLevel),
               y: y + edgeYIndex,
-              // linearly interpolate to iso level
               z: z + edgeZIndex 
             }));
         }
@@ -177,27 +179,33 @@ function dual_contour_3d_find_best_vertex(
 
     if (changes.length === 0) return null
 
-    const normals: Point3D[] = [];
-    for (const v of changes) {
-        const n = scalarField.gradientAt(v.x, v.y, v.z)
-        normals.push(n)
-    }
+    // const normals: Point3D[] = [];
+    // for (const v of changes) {
+    //     const n = scalarField.gradientAt(v.x, v.y, v.z)
+    //     normals.push(n)
+    // }
 
-    return solveLeastSquares(changes, normals)
+    return averagePositions(changes);
 }
-
-// function solve_qef_3d(positions: Point3D[], normals: Point3D[]): Point3D {
-//   return solveLeastSquares(positions, normals)
-
-//   // v[0] = numpy.clip(v[0], x, x + 1)
-//   // v[1] = numpy.clip(v[1], y, y + 1)
-//   // v[2] = numpy.clip(v[2], z, z + 1)
-
-//   // return V3(v[0], v[1], v[2])
-// }
 
 type Matrix = number[][];
 type Vector = number [];
+
+function averagePositions(positions: Point3D[]): Point3D {
+  let x = 0;
+  let y = 0;
+  let z = 0;
+  let i = 0;
+  for (i = 0; i < positions.length; i++) {
+    x += positions[i].x;
+    y += positions[i].y;
+    z += positions[i].z;
+  }
+  x /= positions.length;
+  y /= positions.length;
+  z /= positions.length;
+  return { x, y, z };
+}
 
 function solveLeastSquares(positions: Point3D[], normals: Point3D[]): Point3D {
   const A: Matrix = [];
@@ -221,8 +229,10 @@ function solveLeastSquares(positions: Point3D[], normals: Point3D[]): Point3D {
   const ATAINV = matrixInverse(ATA);
   let x: Matrix;
   if (ATAINV) {
+    console.log('Case 1', positions.length);
     x = multiplyMatrices(ATAINV, ATB);
   } else {
+    console.log('Case 2', positions.length);
     x = [
       [positions.map(p => p.x).reduce((p, c) => p + c) / positions.length],
       [positions.map(p => p.y).reduce((p, c) => p + c) / positions.length],
@@ -230,6 +240,11 @@ function solveLeastSquares(positions: Point3D[], normals: Point3D[]): Point3D {
     ];
   }
 
+  x = [
+    [positions.map(p => p.x).reduce((p, c) => p + c) / positions.length],
+    [positions.map(p => p.y).reduce((p, c) => p + c) / positions.length],
+    [positions.map(p => p.z).reduce((p, c) => p + c) / positions.length]
+  ];
   return { x: x[0][0], y: x[1][0], z: x[2][0] };
   
 }
@@ -351,7 +366,7 @@ function matrixInverse(m: Matrix): Matrix | undefined {
 
 export function test(): Mesh {
   const field = createSphereScalarField(3);
-  const geometry = dualContour(field, {
+  const geometry = dualContour(0, field, {
     maxX:  8, maxY:  8, maxZ:  8,
     minX: -8, minY: -8, minZ: -8
   });
