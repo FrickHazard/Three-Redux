@@ -4,7 +4,7 @@ const maxFrameTime = 0.25;
 
 let lastFrame = performance.now();
 
-function main() {
+function simulationFrame() {
   const now = performance.now();
   const frameTime = now - lastFrame;
   lastFrame = now;
