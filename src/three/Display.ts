@@ -4,6 +4,7 @@ import { frameBit, FrameDataSnaffleBit, playerMoveEvent } from '../../index';
 import Stats from 'stats.js';
 import ResizeObserver from 'resize-observer-polyfill';
 import { Level } from './Level';
+import { simulateFrame } from '../mainLoop';
 
 export class Display {
   private container: HTMLDivElement;
@@ -48,7 +49,9 @@ export class Display {
   }
   
   private renderFrame = () => {
+    window.requestAnimationFrame(this.renderFrame);
     this.stats.begin();
+    simulateFrame();
     const start = performance.now();
     this.render();
     const end = performance.now();
@@ -56,7 +59,6 @@ export class Display {
     this.frameBit.computeFrameData(frameLengthMiliseconds);
     playerMoveEvent.notify();
     this.stats.end();
-    window.requestAnimationFrame(this.renderFrame);
   };
 
   private updateCameraAspect = () => {
