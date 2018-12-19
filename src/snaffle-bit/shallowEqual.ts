@@ -1,3 +1,4 @@
+// copied from redux
 const hasOwn = Object.prototype.hasOwnProperty
 
 function is(x: any, y: any) {

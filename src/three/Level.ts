@@ -5,7 +5,6 @@ import {
   PointLight,
 } from 'three';
 import { StateType } from '../state/redux/reducer/index'; 
-import { reduxBit, ReduxSnaffleBit } from '../../index';
 import { BallGrid } from './BallGrid';
 import { buildChunk } from '../library/marchingTetra';
 import { createVoxelScalarField } from '../library/VoxelScalarField';
@@ -22,7 +21,6 @@ interface UpdateData {
 
 export class Level extends Group {
   private ball: Mesh;
-  private bit: ReduxSnaffleBit;
   private sun: DirectionalLight;
   private ambientLight: AmbientLight;
   constructor() {
@@ -88,17 +86,6 @@ export class Level extends Group {
     // this.add(new DensityCubeSampleVisual([
     //   0, 0, 0, 0, 0, 0, 0, 0,
     // ]))
-    const ballUpdate = {
-      callback: this.update,
-      selector: (state: StateType) => {
-        return {
-          x:state.balls[0].x,
-          y:state.balls[0].y,
-          z:state.balls[0].z,
-        }
-      },
-    };
-    this.bit = reduxBit.createRoot([ballUpdate]);
   }
 
   public update = (data: UpdateData) => {
@@ -112,9 +99,4 @@ export class Level extends Group {
   public onUnloadLevel() {
 
   }
-
-  public dispose() {
-    this.bit.dispose();
-  }
-
 }

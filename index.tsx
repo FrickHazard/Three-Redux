@@ -6,34 +6,20 @@ import thunk from 'redux-thunk';
 import { Body } from './src/component/Body';
 import { rootReducer } from './src/state/redux/reducer/index';
 import { createSnaffleBitProvider } from './src/snaffle-bit/index';
-import { createPlayerTransformLogDataStore } from './src/state/playerTransformLoggerStore';
-import { createFrameDataStore } from './src/state/frameDataStore';
-import { createPlayerMoveEvent } from './src/state/playerMoveEvent';
-import { createInputDataStore } from './src/state/inputStore';
+import { createFrameDataStore } from './src/state/dataStore/frame';
+import { createInputDataStore } from './src/state/dataStore/input';
+import { createPlayerTransformDataStore } from './src/state/dataStore/playerTransform';
 
-const store = createStore(rootReducer, applyMiddleware(thunk));
-export const reduxBit = createSnaffleBitProvider(store, { dispatch: store.dispatch });
-export type ReduxSnaffleBit = ReturnType<typeof reduxBit.createRoot>;
+export const reduxDataStore = createStore(rootReducer, applyMiddleware(thunk));
 
-const playerTransformLogStore = createPlayerTransformLogDataStore();
-export const playerTransformLogSnaffleBitProvider = createSnaffleBitProvider(playerTransformLogStore, {
-  logPlayerTransform: playerTransformLogStore.logPlayerTransform,
-});
-export type PlayerTransformLogSnaffleBit = ReturnType<typeof playerTransformLogSnaffleBitProvider.createRoot>;
-
-const frameDataStore = createFrameDataStore();
-export const frameBit = createSnaffleBitProvider(frameDataStore, {
-  computeFrameData: frameDataStore.computeFrameData,
-});
-export type FrameDataSnaffleBit = ReturnType<typeof frameBit.createRoot>;
-
+export const frameDataStore = createFrameDataStore();
 
 export const inputDataStore = createInputDataStore();
 
-export const playerMoveEvent = createPlayerMoveEvent(frameDataStore, inputDataStore);
+export const playerTransformDataStore = createPlayerTransformDataStore();
 
 render(
-  <Provider store={store}>
+  <Provider store={reduxDataStore}>
     <Body />
   </Provider>,
   document.getElementById('root')

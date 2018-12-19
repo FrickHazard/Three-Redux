@@ -1,17 +1,19 @@
 import React from 'react';
-import { playerTransformLogSnaffleBitProvider  } from '../../index';
-import { PlayerTransformData } from '../state/playerTransformLoggerStore';
+import { playerTransformDataStore  } from '../../index';
+import { PlayerTransformData } from '../state/dataStore/playerTransform';
+import { Unsubscribe } from '../snaffle-bit';
 
 class PlayerTransform extends React.Component<{}, PlayerTransformData> {
-  bit = playerTransformLogSnaffleBitProvider.createRoot([
-    {
-      selector: (state) => state[0],
-      callback: (data) => this.setState(data),
-    }
-  ]);
-  componentWillUnmount() {
-    this.bit.dispose();
+  private unsubscribe?: Unsubscribe;
+  componentWillMount() {
+    this.unsubscribe = playerTransformDataStore.subscribe(this.setPlayerTransform);
   }
+  
+  componentWillUnmount() {
+    this.unsubscribe!();
+  }
+
+  setPlayerTransform = (data: PlayerTransformData) => this.setState(data)
 
   render() {
     if (!this.state) return null;

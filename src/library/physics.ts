@@ -1,14 +1,18 @@
+import { Point3D } from './basicDataTypes';
 
-const gravityValue = 9.81; // m / s^2
-const downVector = [0, -1];
-
-type Newton = number;
-
-interface PhysicsInfo {
+export interface RigidbodyData {
   mass: number;
-  velocity: number;
+  velocity: Point3D;
+  position: Point3D;
 }
 
-export function getGravitationalForce(obj: PhysicsInfo): Newton {
-  return gravityValue * obj.mass;
+export function spring(state: RigidbodyData, timeElapsed: number, simulationStep: number): RigidbodyData {
+  var f = (200 - state.position.x) * 3;
+  var newVelocityX = state.velocity.x + f * simulationStep;
+  var newPositionX = state.position.x + newVelocityX * simulationStep;
+  return {
+    mass: state.mass,
+    position: { ...state.position, x: newPositionX },
+    velocity: { ...state.velocity, x: newVelocityX }
+  };
 }

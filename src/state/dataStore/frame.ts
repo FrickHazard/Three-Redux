@@ -1,8 +1,8 @@
-import { DataStore } from '../snaffle-bit'
-import { createSubscribeAndSignalChangeFunctions } from '../snaffle-bit/subscriptionFactory';
+import { DataStore } from '../../snaffle-bit'
+import { createSubscribeAndSignalChangeFunctions } from '../../snaffle-bit/subscriptionFactory';
 
 type FrameData = Readonly<{
-  deltaTime: number;
+  lastFrameTime: number;
 }>
 
 export interface FrameDataStore extends DataStore<FrameData> {
@@ -11,15 +11,15 @@ export interface FrameDataStore extends DataStore<FrameData> {
 
 export const createFrameDataStore = (): FrameDataStore => {
   let state: FrameData = {
-    deltaTime: 0,
+    lastFrameTime: 0,
   };
 
   const { subscribe, signalChange } = createSubscribeAndSignalChangeFunctions();
 
   return {
-    computeFrameData: function(deltaTime: number) {
+    computeFrameData: function(lastFrameTime: number) {
       state = {
-        deltaTime
+        lastFrameTime
       };
       signalChange();
     },

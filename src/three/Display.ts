@@ -1,6 +1,5 @@
 import { WebGLRenderer, Scene } from 'three';
-import { PlayerEntity } from './PlayerEntity';
-import { frameBit, FrameDataSnaffleBit, playerMoveEvent } from '../../index';
+import { PlayerVisual } from './PlayerVisual';
 import Stats from 'stats.js';
 import ResizeObserver from 'resize-observer-polyfill';
 import { Level } from './Level';
@@ -11,9 +10,8 @@ export class Display {
   private observer: ResizeObserver;
   private stats: Stats = new Stats();
   private renderer: WebGLRenderer;
-  private player: PlayerEntity;
+  private player: PlayerVisual;
   private scene: Scene;
-  private frameBit: FrameDataSnaffleBit = frameBit.createRoot();
   constructor(divElement: HTMLDivElement) {
     this.container = divElement;
     this.renderer = new WebGLRenderer({ antialias: true });
@@ -28,7 +26,7 @@ export class Display {
     this.scene = new Scene();
     this.scene.add(new Level());
     const aspect = this.getSize().width / this.getSize().height;
-    this.player = new PlayerEntity();
+    this.player = new PlayerVisual();
     this.scene.add(this.player);
     this.player.headCamera.aspect = aspect;
     this.player.headCamera.updateProjectionMatrix();
@@ -41,10 +39,10 @@ export class Display {
     this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.updateCameraAspect();
-    this.render();
+    this.renderScene();
   }
 
-  private render() {
+  private renderScene() {
     this.renderer.render(this.scene, this.player.headCamera);
   }
   
@@ -52,12 +50,7 @@ export class Display {
     window.requestAnimationFrame(this.renderFrame);
     this.stats.begin();
     simulateFrame();
-    const start = performance.now();
-    this.render();
-    const end = performance.now();
-    const frameLengthMiliseconds = end - start;
-    this.frameBit.computeFrameData(frameLengthMiliseconds);
-    playerMoveEvent.notify();
+    this.renderScene();
     this.stats.end();
   };
 

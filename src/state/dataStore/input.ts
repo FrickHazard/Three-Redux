@@ -1,6 +1,5 @@
-import { DataStore } from '../snaffle-bit'
-import { createSubscribeAndSignalChangeFunctions } from '../snaffle-bit/subscriptionFactory';
-import { Point2D, Point3D } from '../library/basicDataTypes';
+import { DataStore } from '../../snaffle-bit'
+import { createSubscribeAndSignalChangeFunctions } from '../../snaffle-bit/subscriptionFactory';
 
 export type PlayerMovementInput = Readonly<{
   readonly up: boolean;

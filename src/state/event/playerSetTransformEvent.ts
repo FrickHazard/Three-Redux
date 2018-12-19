@@ -1,4 +1,4 @@
-import { createSubscribeAndSignalChangeFunctions } from '../snaffle-bit/subscriptionFactory';
+import { createSubscribeAndSignalChangeFunctions } from '../../snaffle-bit';
 import { FrameDataStore  } from './frameDataStore';
 import { Point3D, Point2D } from '../library/basicDataTypes';
 import { InputDataStore } from './inputStore';
@@ -6,7 +6,7 @@ import { InputDataStore } from './inputStore';
 const moveSpeedPerSecond = 0.5;
 const lookSpeedPerSecond = 0.01;
 
-export const createPlayerMoveEvent = (
+export const createPlayerSetTransformEvent = (
   frameDataStore: FrameDataStore,
   inputDataStore: InputDataStore
 ) => {
