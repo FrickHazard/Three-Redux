@@ -1,4 +1,4 @@
-import { frameDataStore } from '../index';
+import { frameDataStore, rigidbodyStore } from '../index';
 import { processPlayerInput } from './library/processInput';
 
 let timeElapsed = 0.0;
@@ -32,4 +32,6 @@ export function simulateFrame() {
   processPlayerInput();
 };
 
-function simulate(timeElapsed: number, simulationStep: number) {}
+function simulate(timeElapsed: number, simulationStep: number) {
+  rigidbodyStore.getState();
+}

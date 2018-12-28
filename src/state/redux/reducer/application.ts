@@ -9,7 +9,7 @@ export type ApplicationState = Readonly<Application>;
 
 const initialState: ApplicationState = {
   playerMoveSpeedPerSecond: 0.5,
-  playerLookSpeedPerSecond: 0.02,
+  playerLookSpeedPerSecond: 0.2,
 };
 
 export const application = (state: ApplicationState = initialState, action: ActionType): ApplicationState => {

@@ -1,16 +1,31 @@
-import { WebGLRenderer, Scene } from 'three';
-import { PlayerVisual } from './PlayerVisual';
+import { WebGLRenderer, Scene, PerspectiveCamera } from 'three';
+import { PlayerEntity } from '../entity/PlayerEntity';
 import Stats from 'stats.js';
 import ResizeObserver from 'resize-observer-polyfill';
 import { Level } from './Level';
 import { simulateFrame } from '../mainLoop';
+import { createIdentityMatrix } from '../library/transformMatrix';
+
+const tempPlayerSeedData = {
+  intialData: {
+    pitch: 0,
+    yaw: 0,
+    bodyTransformMatrix: createIdentityMatrix(),
+    headTransformMatrix: createIdentityMatrix(),
+    rigidbodyData: {
+      mass: 3,
+      velocity: { x: 0, y: 0, z: 0 },
+      position: { x: 0, y: 0, z: 0 }
+    }
+  }
+};
 
 export class Display {
   private container: HTMLDivElement;
   private observer: ResizeObserver;
   private stats: Stats = new Stats();
   private renderer: WebGLRenderer;
-  private player: PlayerVisual;
+  private camera: PerspectiveCamera;
   private scene: Scene;
   constructor(divElement: HTMLDivElement) {
     this.container = divElement;
@@ -23,13 +38,14 @@ export class Display {
     this.stats.dom.style.top = '';
     this.stats.dom.style.left = '';
     this.container.appendChild(this.renderer.domElement);
+    // temp stuff
     this.scene = new Scene();
     this.scene.add(new Level());
+    const playerEntity = new PlayerEntity({ ...tempPlayerSeedData, sceneToAddTo: this.scene });
     const aspect = this.getSize().width / this.getSize().height;
-    this.player = new PlayerVisual();
-    this.scene.add(this.player);
-    this.player.headCamera.aspect = aspect;
-    this.player.headCamera.updateProjectionMatrix();
+    this.camera = playerEntity.visual.headCamera;
+    this.camera.aspect = aspect;
+    this.camera.updateProjectionMatrix();
     this.observer = new ResizeObserver(() => this.onSizeChange());
     this.observer.observe(this.container);
     this.renderFrame();
@@ -43,7 +59,7 @@ export class Display {
   }
 
   private renderScene() {
-    this.renderer.render(this.scene, this.player.headCamera);
+    this.renderer.render(this.scene, this.camera);
   }
   
   private renderFrame = () => {
@@ -55,8 +71,8 @@ export class Display {
   };
 
   private updateCameraAspect = () => {
-    this.player.headCamera.aspect = this.getSize().width / this.getSize().height;
-    this.player.headCamera.updateProjectionMatrix();
+    this.camera.aspect = this.getSize().width / this.getSize().height;
+    this.camera.updateProjectionMatrix();
   };
 
   public getSize () {

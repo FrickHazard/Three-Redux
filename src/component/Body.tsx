@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { MainCanvas } from './MainCanvas';
-import { Toolbar } from './Toolbar';
+import { Toolbar } from './TopToolbar';
 import { InputModule } from './InputModule';
 import { RightToolbar } from './RightToolbar';
 import { StateType } from '../state/redux/reducer/index';

@@ -6,9 +6,9 @@ export interface Observable<T extends any[]> {
   subscribe: Subscribe<T>;
 }
 
-export interface DataStore<State extends Readonly<{}>> extends Observable<[]> {
+export interface DataStore<State extends Readonly<{}>> extends Observable<never> {
   // data stores only expose a low level change with no params
-  subscribe: Subscribe<[]>;
+  subscribe: Subscribe<never>;
   getState: () => State;
 }
 

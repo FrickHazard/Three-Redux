@@ -1,8 +1,7 @@
-import { Object3D, PerspectiveCamera, Vector3, Euler } from 'three';
+import { Object3D, PerspectiveCamera, } from 'three';
 import { degToRad } from '../library/units';
-import { playerTransformDataStore } from '../..';
-import { Point3D, Point2D } from '../library/basicDataTypes';
-import { Unsubscribe } from '../snaffle-bit';
+import { Unsubscribe, Observable } from '../snaffle-bit';
+import { TransformMatrix } from '../library/transformMatrix';
 
 const playerHeight = 2;
 const nearClippingPlaneDistance = 0.1;
@@ -10,34 +9,35 @@ const farClippingPlaneDistance = 500;
 const playerFov = degToRad(75);
 
 export class PlayerVisual extends Object3D {
-  public yaw: number = 0;
-  public pitch: number = 0;
   public headCamera: PerspectiveCamera;
-  private playerMoveEventUnsubscribe: Unsubscribe;
-  constructor() {
+  private setTransformEventUnsubscribe: Unsubscribe;
+  constructor(setTransformEvent: Observable<[TransformMatrix, TransformMatrix]>, bodyMatrix: TransformMatrix, headMatrix: TransformMatrix) {
     super();
-    this.position.set(0, 0, 14);
     this.headCamera = new PerspectiveCamera(playerFov, 0.5,
       nearClippingPlaneDistance, farClippingPlaneDistance);
     this.add(this.headCamera);
-    this.headCamera.position.add(new Vector3(0, playerHeight, 0));
-    this.playerMoveEventUnsubscribe = playerTransformDataStore.subscribe(this.setTransform);
+    this.setTransformEventUnsubscribe = setTransformEvent.subscribe(this.setTransform);
+    this.setTransform(bodyMatrix, headMatrix);
   }
 
-  private setTransform = (input: {
-    movementAxisInput: Point3D,
-    lookAxisInput: Point2D,
-  }) => {
-    this.pitch += input.lookAxisInput.y;
-    this.headCamera.quaternion.setFromEuler(new Euler(this.pitch, 0, Math.PI));
-    this.yaw += input.lookAxisInput.x;
-    this.quaternion.setFromEuler(new Euler(0, -this.yaw, 0));
-    this.translateX(input.movementAxisInput.x);
-    this.translateY(input.movementAxisInput.y);
-    this.translateZ(input.movementAxisInput.z);
+  private setTransform = (bodyMatrix: TransformMatrix, headMatrix: TransformMatrix) => {
+    this.matrix.set(
+      bodyMatrix[ 0], bodyMatrix[ 1], bodyMatrix[ 2], bodyMatrix[ 3],
+      bodyMatrix[ 4], bodyMatrix[ 5], bodyMatrix[ 6], bodyMatrix[ 7],
+      bodyMatrix[ 8], bodyMatrix[ 9], bodyMatrix[10], bodyMatrix[11],
+      bodyMatrix[12], bodyMatrix[13], bodyMatrix[14], bodyMatrix[15],
+    );
+    this.matrix.decompose(this.position, this.quaternion, this.scale);
+    this.headCamera.matrix.set(
+      headMatrix[ 0], headMatrix[ 1], headMatrix[ 2], 0,
+      headMatrix[ 4], headMatrix[ 5], headMatrix[ 6], playerHeight,
+      headMatrix[ 8], headMatrix[ 9], headMatrix[10], 0,
+      headMatrix[12], headMatrix[13], headMatrix[14], headMatrix[15],
+    );
+    this.headCamera.matrix.decompose(this.headCamera.position, this.headCamera.quaternion, this.headCamera.scale);
   }
 
   public dispose() {
-    this.playerMoveEventUnsubscribe();
+    this.setTransformEventUnsubscribe();
   }
 }

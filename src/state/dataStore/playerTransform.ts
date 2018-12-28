@@ -1,11 +1,13 @@
 import { DataStore } from '../../snaffle-bit'
 import { createSubscribeAndSignalChangeFunctions } from '../../snaffle-bit/subscriptionFactory';
 import { Point3D } from '../../library/basicDataTypes';
+import { TransformMatrix } from '../../library/transformMatrix';
 
 export type PlayerTransformData = Readonly<{
   pitch: number;
   yaw: number;
-  position: Point3D;
+  bodyTransformMatrix: TransformMatrix;
+  headTransformMatrix: TransformMatrix;
 }>
 
 export interface PlayerTransformDataStore extends DataStore<PlayerTransformData> {
@@ -16,11 +18,18 @@ export const createPlayerTransformDataStore = (): PlayerTransformDataStore => {
   let state: PlayerTransformData = {
     pitch: 0,
     yaw: 0,
-    position: {
-      x: 0,
-      y: 0,
-      z: 0
-    },
+    headTransformMatrix: [
+      1, 0, 0, 0,
+      0, 1, 0, 0,
+      0, 0, 1, 0,
+      0, 0, 0, 1
+    ],
+    bodyTransformMatrix: [
+      1, 0, 0, 0,
+      0, 1, 0, 0,
+      0, 0, 1, 0,
+      0, 0, 0, 1
+    ],
   };
 
   const { subscribe, signalChange } = createSubscribeAndSignalChangeFunctions();
